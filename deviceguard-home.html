@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DeviceGuard — Farmcentre Kano</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--white:#fff;--off:#fafafa;--bg:#f5f5f5;--border:#e8e8e8;--ink-light:#999;--ink-mid:#555;--ink:#1a1a1a;--black:#0a0a0a;--green:#16a34a;--red:#dc2626;--radius:14px;--shadow:0 1px 3px rgba(0,0,0,0.08),0 1px 2px rgba(0,0,0,0.04);--shadow-md:0 4px 16px rgba(0,0,0,0.08)}
+body{background:var(--black);color:var(--white);font-family:'Inter',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px}
+
+.container{width:100%;max-width:420px}
+
+/* LOGO */
+.logo-wrap{text-align:center;margin-bottom:48px}
+.logo-mark{width:56px;height:56px;background:var(--white);border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:26px}
+.logo-name{font-size:24px;font-weight:800;letter-spacing:-0.5px;color:var(--white)}
+.logo-name span{color:rgba(255,255,255,0.4)}
+.logo-tag{font-size:12px;color:rgba(255,255,255,0.4);margin-top:4px;letter-spacing:0.5px}
+
+/* BADGE */
+.kano-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:20px;padding:6px 14px;font-size:11px;color:rgba(255,255,255,0.6);letter-spacing:0.5px;margin-bottom:48px}
+
+/* PORTAL CARDS */
+.portals{display:flex;flex-direction:column;gap:10px;margin-bottom:24px}
+.portal{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:var(--radius);padding:20px;cursor:pointer;text-decoration:none;display:flex;align-items:center;justify-content:space-between;transition:all 0.2s}
+.portal:hover{background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.2);transform:translateY(-1px)}
+.portal-left{display:flex;align-items:center;gap:14px}
+.portal-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.portal-seller .portal-icon{background:rgba(255,255,255,0.1)}
+.portal-assoc .portal-icon{background:rgba(250,204,21,0.15)}
+.portal-customer .portal-icon{background:rgba(99,102,241,0.15)}
+.portal-name{font-size:15px;font-weight:600;color:var(--white)}
+.portal-desc{font-size:12px;color:rgba(255,255,255,0.4);margin-top:2px}
+.portal-arrow{color:rgba(255,255,255,0.25);font-size:18px}
+
+/* FOOTER */
+.footer{text-align:center;font-size:11px;color:rgba(255,255,255,0.2);line-height:1.6}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="logo-wrap">
+    <div class="logo-mark" style="background:#0a0a0a;padding:4px"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAAAAACPAi4CAAAAIGNIUk0AAHomAACAhAAA+gAAAIDoAAB1MAAA6mAAADqYAAAXcJy6UTwAAAACYktHRAD/h4/MvwAAAAd0SU1FB+oFDxY7I232TOoAAAFxSURBVFjD7ZdLmoQwCITpfH0M7n+yOsgseloDFA91MZtxp6H+AIEkvt7y7FkP9f+AAQBoDF71MkJERG8DvrPrPcB3dpSIHHDqyjgSgNMUCApAjDxFRACSxIF/toA67XR0Axwlo16nBcNHEOeGCHQbdqX5rtW/9lBjtDPaXmjGO0CrbwCDZlgP9SVgoq8AI30BmOlzgNEXG9sa6Yv1XDN9Tli93n2bAHj+MAZ4vVaE1etrwqr1ABrCqvXitlO0gLh+TRTLqpk+RIEUYOfDBs59WFal1P9wrCgFWIqdaCO47twPFmyjIVl6WMBAzMmEEKiSuoJxwoWAoA8bSp7EaGuCBjfLCmk3TDgMYCS2mWJrcQ/Oa4AacFrK/oKBZhuGH754U+27UcsDlfgXPKgILL4YQk6g+SE5yAg8vyyJnJCsD10FRsjWt7jqavHeePAxxkQ/vq2n5ZlX4uHE3f8FYYfcFQ9O4f1/JiHddxXQPn//5/oD2hdz9xTM/WgAAAAASUVORK5CYII=" style="width:36px;height:36px;object-fit:contain;border-radius:10px"></div>
+    <div class="logo-name">Device<span>Guard</span></div>
+    <div class="logo-tag">by TechLink Nigeria</div>
+  </div>
+
+  <div style="text-align:center;margin-bottom:40px">
+    <div class="kano-badge">🇳🇬 &nbsp;Farmcentre Kano · Official Registry</div>
+    <div style="font-size:13px;color:rgba(255,255,255,0.4);line-height:1.7;max-width:300px;margin:0 auto">Nigeria's first mandated device sale registry. Select your portal to continue.</div>
+  </div>
+
+  <div class="portals">
+    <a class="portal portal-seller" href="deviceguard-seller.html">
+      <div class="portal-left">
+        <div class="portal-icon">🏪</div>
+        <div>
+          <div class="portal-name">Business Portal</div>
+          <div class="portal-desc">Record sales · Stock book · Invoices</div>
+        </div>
+      </div>
+      <div class="portal-arrow">→</div>
+    </a>
+    <a class="portal portal-assoc" href="deviceguard-association.html">
+      <div class="portal-left">
+        <div class="portal-icon">⚖️</div>
+        <div>
+          <div class="portal-name">Association Portal</div>
+          <div class="portal-desc">Market overview · All records · Reports</div>
+        </div>
+      </div>
+      <div class="portal-arrow">→</div>
+    </a>
+    <a class="portal portal-customer" href="deviceguard-customer.html">
+      <div class="portal-left">
+        <div class="portal-icon">📱</div>
+        <div>
+          <div class="portal-name">Customer Portal</div>
+          <div class="portal-desc">Register device · Verify ownership · Transfer</div>
+        </div>
+      </div>
+      <div class="portal-arrow">→</div>
+    </a>
+  </div>
+
+  <div class="footer">DeviceGuard v3.0 · TechLink Nigeria<br>Anti-Theft Device Registry · Farmcentre Kano</div>
+</div>
+</body>
+</html>

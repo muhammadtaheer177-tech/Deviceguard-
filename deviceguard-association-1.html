@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DeviceGuard — Association Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--white:#fff;--off:#fafafa;--bg:#f4f4f4;--border:#e5e5e5;--border-strong:#c8c8c8;--ink-light:#aaa;--ink-mid:#666;--ink:#1a1a1a;--black:#0a0a0a;--green:#16a34a;--green-bg:#f0fdf4;--green-border:#bbf7d0;--red:#dc2626;--red-bg:#fef2f2;--gold:#92400e;--gold-bg:#fffbeb;--radius:14px;--radius-sm:10px;--shadow:0 1px 4px rgba(0,0,0,0.06);--shadow-md:0 4px 16px rgba(0,0,0,0.08)}
+body{background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;min-height:100vh}
+
+header{background:var(--black);color:#fff;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;position:sticky;top:0;z-index:100}
+.h-logo{font-size:17px;font-weight:800;letter-spacing:-0.3px}
+.h-logo span{opacity:0.35}
+.h-right{display:flex;align-items:center;gap:8px}
+.lang-pill{display:flex;background:rgba(255,255,255,0.08);border-radius:6px;overflow:hidden}
+.lang-btn{font-size:11px;font-weight:500;padding:4px 10px;cursor:pointer;color:rgba(255,255,255,0.4);background:transparent;border:none;font-family:'Inter',sans-serif}
+.lang-btn.active{background:rgba(255,255,255,0.15);color:#fff}
+.h-badge{font-size:11px;font-weight:500;color:rgba(255,255,255,0.4)}
+
+.wrap{max-width:480px;margin:0 auto;padding:0 16px 80px}
+.view{display:none}.view.active{display:block;animation:up 0.2s ease}
+@keyframes up{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.back{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:500;color:var(--ink-mid);cursor:pointer;padding:18px 0 2px}
+.back:hover{color:var(--ink)}
+
+.ph{padding:16px 0 20px}
+.ph-eye{font-size:11px;font-weight:600;color:var(--ink-light);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.ph-title{font-size:26px;font-weight:800;letter-spacing:-0.6px;line-height:1.1}
+
+/* PIN */
+.pin-wrap{text-align:center;padding:8px 0}
+.pin-row{display:flex;gap:10px;justify-content:center;margin:20px 0}
+.pin-box{width:46px;height:54px;background:var(--off);border:1.5px solid var(--border);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:800;transition:border-color 0.15s}
+.pin-box.act{border-color:var(--black);background:var(--white)}
+.numpad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:260px;margin:0 auto}
+.nk{aspect-ratio:1.3;border:1px solid var(--border);background:var(--white);border-radius:var(--radius-sm);font-family:'Inter',sans-serif;font-size:20px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow);transition:all 0.12s}
+.nk:hover{background:var(--black);color:#fff;border-color:var(--black)}
+.nk:active{transform:scale(0.95)}
+.nk.fn{font-size:12px;font-weight:600}
+
+/* TABS */
+.tabs{display:flex;background:var(--white);border-radius:var(--radius);padding:4px;margin-bottom:20px;gap:2px;border:1px solid var(--border);box-shadow:var(--shadow);overflow-x:auto}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:1;min-width:60px;padding:9px 4px;text-align:center;font-size:11px;font-weight:600;color:var(--ink-mid);cursor:pointer;border-radius:10px;transition:all 0.15s;white-space:nowrap}
+.tab.active{background:var(--black);color:#fff}
+
+/* STATS */
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.stat-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow)}
+.stat-num{font-size:28px;font-weight:800;letter-spacing:-1px;line-height:1}
+.stat-lbl{font-size:12px;color:var(--ink-mid);margin-top:4px;font-weight:500}
+
+/* CARD */
+.card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:12px;box-shadow:var(--shadow)}
+.card-head{font-size:14px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
+.card-head-count{font-size:12px;font-weight:500;color:var(--ink-mid)}
+
+/* RECORD ITEMS */
+.rec-item{padding:13px 0;border-bottom:1px solid var(--border);cursor:pointer;transition:all 0.15s}
+.rec-item:last-child{border-bottom:none}
+.rec-item:hover{padding-left:4px}
+.ri-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:3px;gap:8px}
+.ri-name{font-size:15px;font-weight:700;flex:1}
+.ri-badge{font-size:10px;font-weight:700;background:var(--black);color:#fff;padding:3px 8px;border-radius:4px;white-space:nowrap}
+.ri-badge.green{background:var(--green)}
+.ri-device{font-size:13px;color:var(--ink-mid);margin-top:2px}
+.ri-meta{font-size:12px;color:var(--ink-light);margin-top:2px}
+
+.scroll-box{max-height:380px;overflow-y:auto}
+.scroll-box::-webkit-scrollbar{width:3px}
+.scroll-box::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+
+.empty{text-align:center;padding:32px;color:var(--ink-light)}
+.empty-icon{font-size:32px;margin-bottom:8px}
+.empty-text{font-size:13px}
+
+/* SEARCH */
+.search-row{display:flex;gap:8px;margin-bottom:10px}
+.search-row input{flex:1;background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:11px 14px;font-family:'Inter',sans-serif;font-size:14px;outline:none;color:var(--ink)}
+.search-row input:focus{border-color:var(--black)}
+.search-row input::placeholder{color:var(--ink-light)}
+.search-row select{background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:11px 12px;font-family:'Inter',sans-serif;font-size:12px;outline:none;color:var(--ink);appearance:none;min-width:100px}
+
+/* TOGGLE BUTTONS */
+.toggle-row{display:flex;gap:8px;margin-bottom:14px}
+.tog-btn{flex:1;padding:11px;border-radius:var(--radius-sm);font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border:1.5px solid var(--border);background:var(--white);color:var(--ink-mid);transition:all 0.15s;text-align:center}
+.tog-btn.active{background:var(--black);color:#fff;border-color:var(--black)}
+
+/* COMPLIANCE */
+.comp-item{display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--border)}
+.comp-item:last-child{border-bottom:none}
+.comp-left{display:flex;align-items:center;gap:12px}
+.comp-av{width:38px;height:38px;border-radius:10px;background:var(--black);color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;flex-shrink:0}
+.comp-name{font-size:14px;font-weight:700}
+.comp-count{font-size:12px;color:var(--ink-mid);margin-top:2px}
+.comp-badge{font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px}
+.comp-badge.hi{background:var(--green-bg);color:var(--green)}
+.comp-badge.md{background:var(--gold-bg);color:var(--gold)}
+.comp-badge.lo{background:var(--red-bg);color:var(--red)}
+
+/* REVENUE */
+.rev-split{background:var(--off);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:12px}
+.rev-split-title{font-size:12px;font-weight:700;color:var(--ink-mid);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:14px}
+.rev-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)}
+.rev-row:last-child{border-bottom:none}
+.rev-lbl{font-size:13px;color:var(--ink-mid);font-weight:500}
+.rev-amt{font-size:20px;font-weight:800;letter-spacing:-0.5px}
+.rev-bar-wrap{margin-bottom:12px}
+.rev-bar-label{display:flex;justify-content:space-between;font-size:12px;color:var(--ink-mid);margin-bottom:5px}
+.rev-bar-track{height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+.rev-bar-fill{height:100%;background:var(--black);border-radius:3px;transition:width 0.4s}
+
+/* PURCHASE RECORD ITEM */
+.pur-item{padding:13px 0;border-bottom:1px solid var(--border)}
+.pur-item:last-child{border-bottom:none}
+.pur-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:4px;gap:8px}
+.pur-name{font-size:15px;font-weight:700;flex:1}
+.pur-status{font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px}
+.pur-status.sold{background:var(--green-bg);color:var(--green)}
+.pur-status.stock{background:var(--gold-bg);color:var(--gold)}
+.pur-imei{font-size:12px;font-weight:600;color:var(--black);margin-bottom:3px}
+.pur-meta{font-size:12px;color:var(--ink-mid)}
+.pur-addr{font-size:11px;color:var(--ink-light);margin-top:2px}
+
+/* DETAIL */
+.det-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:14px;box-shadow:var(--shadow-md)}
+.det-head{background:var(--black);color:#fff;padding:18px 20px}
+.det-shop{font-size:18px;font-weight:800;letter-spacing:-0.3px}
+.det-addr{font-size:11px;color:rgba(255,255,255,0.45);margin-top:4px;line-height:1.6}
+.det-id-wrap{padding:14px 20px;border-bottom:1px solid var(--border)}
+.det-id{font-size:22px;font-weight:800;letter-spacing:-0.5px}
+.det-date{font-size:12px;color:var(--ink-mid);margin-top:3px}
+.det-rows{padding:0 4px}
+.det-row{display:flex;justify-content:space-between;padding:10px 16px;border-bottom:1px solid var(--border);font-size:13px;gap:12px}
+.det-row:last-child{border-bottom:none}
+.det-k{color:var(--ink-mid);font-size:12px;font-weight:500;flex-shrink:0}
+.det-v{font-weight:600;text-align:right;word-break:break-word}
+.det-foot{background:var(--off);padding:14px 20px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--border)}
+.det-fee-lbl{font-size:11px;color:var(--ink-mid);font-weight:500}
+.det-fee{font-size:20px;font-weight:800;letter-spacing:-0.5px}
+
+/* CHAIN */
+.chain{display:flex;flex-direction:column;gap:0}
+.chain-item{display:flex;gap:14px;position:relative}
+.chain-item:not(:last-child)::after{content:'';position:absolute;left:17px;top:36px;bottom:-4px;width:2px;background:var(--border)}
+.chain-dot{width:34px;height:34px;border-radius:50%;background:var(--black);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:2px;z-index:1}
+.chain-dot.current{background:var(--green)}
+.chain-content{flex:1;padding-bottom:16px}
+.chain-name{font-size:14px;font-weight:600}
+.chain-meta{font-size:12px;color:var(--ink-mid);margin-top:2px}
+.chain-tag{display:inline-block;font-size:10px;font-weight:600;padding:2px 8px;border-radius:4px;margin-top:4px;background:var(--bg);color:var(--ink-mid)}
+.chain-tag.current{background:var(--black);color:#fff}
+
+/* BUTTONS */
+.btn{width:100%;padding:15px;border:none;border-radius:var(--radius-sm);cursor:pointer;font-family:'Inter',sans-serif;font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.15s}
+.btn-primary{background:var(--black);color:#fff}.btn-primary:hover{background:#222}
+.btn-secondary{background:var(--white);color:var(--ink);border:1.5px solid var(--border-strong)}.btn-secondary:hover{border-color:var(--black)}
+.btn-ghost{background:transparent;color:var(--ink-mid);font-size:13px}.btn-ghost:hover{color:var(--ink)}
+.btn-wa{background:#25d366;color:#fff}
+.btn+.btn{margin-top:8px}
+
+.info{background:var(--off);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;font-size:13px;color:var(--ink-mid);line-height:1.6;margin-bottom:14px;display:flex;gap:10px}
+
+.badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px}
+.badge-green{background:var(--green-bg);color:var(--green)}
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--black);color:#fff;padding:12px 20px;border-radius:8px;font-size:13px;font-weight:500;z-index:999;white-space:nowrap;transition:transform 0.25s;box-shadow:var(--shadow-md)}
+.toast.show{transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<header>
+  <div style="display:flex;align-items:center;gap:10px">
+    <div style="width:36px;height:36px;background:#fff;border-radius:9px;overflow:hidden;display:flex;align-items:center;justify-content:center;flex-shrink:0"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAAAAACPAi4CAAAAIGNIUk0AAHomAACAhAAA+gAAAIDoAAB1MAAA6mAAADqYAAAXcJy6UTwAAAACYktHRAD/h4/MvwAAAAd0SU1FB+oFDxY7I232TOoAAAFxSURBVFjD7ZdLmoQwCITpfH0M7n+yOsgseloDFA91MZtxp6H+AIEkvt7y7FkP9f+AAQBoDF71MkJERG8DvrPrPcB3dpSIHHDqyjgSgNMUCApAjDxFRACSxIF/toA67XR0Axwlo16nBcNHEOeGCHQbdqX5rtW/9lBjtDPaXmjGO0CrbwCDZlgP9SVgoq8AI30BmOlzgNEXG9sa6Yv1XDN9Tli93n2bAHj+MAZ4vVaE1etrwqr1ABrCqvXitlO0gLh+TRTLqpk+RIEUYOfDBs59WFal1P9wrCgFWIqdaCO47twPFmyjIVl6WMBAzMmEEKiSuoJxwoWAoA8bSp7EaGuCBjfLCmk3TDgMYCS2mWJrcQ/Oa4AacFrK/oKBZhuGH754U+27UcsDlfgXPKgILL4YQk6g+SE5yAg8vyyJnJCsD10FRsjWt7jqavHeePAxxkQ/vq2n5ZlX4uHE3f8FYYfcFQ9O4f1/JiHddxXQPn//5/oD2hdz9xTM/WgAAAAASUVORK5CYII=" style="width:26px;height:26px;object-fit:contain;border-radius:5px"></div>
+    <div>
+      <div class="h-logo">Device<span>Guard</span></div>
+      <div style="font-size:10px;color:rgba(255,255,255,0.4);margin-top:1px;letter-spacing:0.3px">Technicians Association</div>
+    </div>
+  </div>
+  <div class="h-right">
+    <div class="lang-pill">
+      <button class="lang-btn active" id="btn-en" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" id="btn-ha" onclick="setLang('ha')">HA</button>
+    </div>
+    <div class="h-badge">Association</div>
+  </div>
+</header>
+
+<div class="wrap">
+
+<!-- LOGIN -->
+<div class="view active" id="v-login">
+  <div class="ph"><div class="ph-eye" data-en="Restricted Access" data-ha="Damar Kariya">Restricted Access</div><div class="ph-title" data-en="Association Portal" data-ha="Shiga Ƙungiya">Association Portal</div></div>
+  <div class="card">
+    <div class="pin-wrap">
+      <div style="font-size:14px;font-weight:600;margin-bottom:4px">Technicians Association of Kano</div>
+      <div style="font-size:13px;color:var(--ink-mid);margin-bottom:4px" data-en="Enter your secure PIN to continue" data-ha="Shigar da PIN ɗin ku don ci gaba">Enter your secure PIN to continue</div>
+      <div class="pin-row"><div class="pin-box act" id="ap0">·</div><div class="pin-box" id="ap1">·</div><div class="pin-box" id="ap2">·</div><div class="pin-box" id="ap3">·</div></div>
+      <div class="numpad">
+        <button class="nk" onclick="ap('1')">1</button><button class="nk" onclick="ap('2')">2</button><button class="nk" onclick="ap('3')">3</button>
+        <button class="nk" onclick="ap('4')">4</button><button class="nk" onclick="ap('5')">5</button><button class="nk" onclick="ap('6')">6</button>
+        <button class="nk" onclick="ap('7')">7</button><button class="nk" onclick="ap('8')">8</button><button class="nk" onclick="ap('9')">9</button>
+        <button class="nk fn" onclick="ac()">Clear</button><button class="nk" onclick="ap('0')">0</button>
+        <button class="nk fn" onclick="aok()" style="background:var(--black);color:#fff;border-color:var(--black)">OK</button>
+      </div>
+      <div id="a-err" style="font-size:12px;color:var(--red);margin-top:8px;display:none">Incorrect PIN · Hint: 9999</div>
+    </div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="view" id="v-dash">
+  <div class="ph"><div class="ph-eye" data-en="Technicians Association of Kano" data-ha="Ƙungiyar Masu Fasaha ta Kano">Technicians Association of Kano</div><div class="ph-title" data-en="Market Dashboard" data-ha="Allon Kasuwa">Market Dashboard</div></div>
+  <div class="tabs">
+    <div class="tab active" id="nt-overview" onclick="dtab('overview',this)" data-en="Overview" data-ha="Duba">Overview</div>
+    <div class="tab" id="nt-records" onclick="dtab('records',this)" data-en="Records" data-ha="Rikodin">Records</div>
+    <div class="tab" id="nt-shops" onclick="dtab('shops',this)" data-en="Shops" data-ha="Kantuna">Shops</div>
+    <div class="tab" id="nt-stolen" onclick="dtab('stolen',this)" style="color:#dc2626">🚨 Stolen</div>
+      <div class="tab" id="nt-revenue" onclick="dtab('revenue',this)" data-en="Revenue" data-ha="Kudade">Revenue</div>
+  </div>
+
+  <!-- OVERVIEW TAB -->
+  <div id="tab-overview" style="display:block">
+    <div class="stat-grid">
+      <div class="stat-card"><div class="stat-num" id="o-total">0</div><div class="stat-lbl" data-en="Total Sales" data-ha="Jimillar Tallace">Total Sales</div></div>
+      <div class="stat-card"><div class="stat-num" id="o-today">0</div><div class="stat-lbl" data-en="Today" data-ha="Yau">Today</div></div>
+      <div class="stat-card"><div class="stat-num" id="o-revenue" style="font-size:22px">₦0</div><div class="stat-lbl" data-en="Total Fees" data-ha="Jimillar Kuɗi">Total Fees</div></div>
+      <div class="stat-card"><div class="stat-num" id="o-transfers">0</div><div class="stat-lbl" data-en="Transfers" data-ha="Canjawa">Transfers</div></div>
+    </div>
+    <div class="card">
+      <div class="card-head" data-en="Latest Sales" data-ha="Sabon Tallace">Latest Sales</div>
+      <div id="ov-recent"><div class="empty"><div class="empty-icon">📊</div><div class="empty-text" data-en="No sales recorded yet" data-ha="Babu tallace tukuna">No sales recorded yet</div></div></div>
+    </div>
+    <button class="btn btn-ghost" onclick="logout()" data-en="Log Out" data-ha="Fita">Log Out</button>
+  </div>
+
+  <!-- RECORDS TAB -->
+  <div id="tab-records" style="display:none">
+    <!-- Type toggle -->
+    <div class="toggle-row">
+      <div class="tog-btn active" id="tb-sales" onclick="switchType('sales',this)">📋 Sales Records</div>
+      <div class="tog-btn" id="tb-purchases" onclick="switchType('purchases',this)">📦 Purchase Records</div>
+    </div>
+    <!-- Search + filters -->
+    <div class="search-row">
+      <input type="text" id="r-q" placeholder="Name, device, IMEI, ID..." oninput="renderRecs()">
+      <select id="r-filter" onchange="renderRecs()">
+        <option value="all">All Time</option><option value="today">Today</option>
+        <option value="week">This Week</option><option value="month">This Month</option>
+      </select>
+    </div>
+    <div class="search-row" style="margin-bottom:14px">
+      <select id="r-shop" onchange="renderRecs()" style="flex:1;min-width:unset">
+        <option value="all">All Shops</option>
+        <option>Bega Apple Links</option><option>TechHub Kano</option><option>PhoneZone</option>
+        <option>GadgetKing</option><option>MobileXpress</option>
+      </select>
+    </div>
+    <div class="card">
+      <div class="card-head"><span id="rec-type-lbl">All Sale Records</span><div class="card-head-count" id="r-count">0</div></div>
+      <div class="scroll-box"><div id="recs-list"><div class="empty"><div class="empty-icon">🔍</div><div class="empty-text">No records</div></div></div></div>
+    </div>
+  </div>
+
+  <!-- SHOPS TAB -->
+  <div id="tab-shops" style="display:none">
+    <div class="info"><div>📊</div><span data-en="Compliance rating based on sales recorded this month." data-ha="Ƙididdigar bin doka dangane da tallace da aka yi wannan wata.">Compliance rating based on sales recorded this month.</span></div>
+    <div class="card">
+      <div class="card-head" data-en="Shop Compliance" data-ha="Bin Doka na Kantuna">Shop Compliance</div>
+      <div id="shops-list"></div>
+    </div>
+  </div>
+
+  <!-- REVENUE TAB -->
+  <div id="tab-revenue" style="display:none">
+    <div class="stat-grid">
+      <div class="stat-card"><div class="stat-num" id="rev-total" style="font-size:22px">₦0</div><div class="stat-lbl" data-en="Total Collected" data-ha="Jimillar da aka Tattara">Total Collected</div></div>
+      <div class="stat-card"><div class="stat-num" id="rev-today" style="font-size:22px">₦0</div><div class="stat-lbl" data-en="Today" data-ha="Yau">Today</div></div>
+    </div>
+    <div class="rev-split">
+      <div class="rev-split-title">Revenue Split — ₦75 per sale (₦25 Association · ₦50 TechLink)</div>
+      <div class="rev-row"><div class="rev-lbl">Technicians Association</div><div class="rev-amt" id="sp-assoc">₦0</div></div>
+      <div class="rev-row"><div class="rev-lbl">TechLink Nigeria</div><div class="rev-amt" id="sp-tech">₦0</div></div>
+    </div>
+    <div class="card">
+      <div class="card-head" data-en="Revenue by Shop" data-ha="Kuɗi ta Shago">Revenue by Shop</div>
+      <div id="rev-by-shop"></div>
+    </div>
+  </div>
+
+  <!-- STOLEN DEVICE TAB -->
+  <div id="tab-stolen" style="display:none">
+
+    <!-- SUBMIT REPORT FORM -->
+    <div style="background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:12px;box-shadow:var(--shadow)">
+      <div style="font-size:14px;font-weight:700;margin-bottom:5px">🚨 Flag Stolen Device</div>
+      <div style="font-size:13px;color:var(--ink-mid);margin-bottom:16px;line-height:1.5">Enter the IMEI and details of a device confirmed stolen. Once submitted and confirmed, it will be flagged across the entire registry.</div>
+
+      <div style="margin-bottom:12px">
+        <label style="display:block;font-size:12px;font-weight:600;color:var(--ink-mid);margin-bottom:6px">IMEI Number *</label>
+        <input id="sr-imei" type="text" inputmode="numeric" placeholder="15-digit IMEI number" style="width:100%;background:var(--off);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:13px 14px;color:var(--ink);font-family:'Inter',sans-serif;font-size:15px;outline:none;font-family:monospace;letter-spacing:1px">
+      </div>
+
+      <div style="margin-bottom:12px">
+        <label style="display:block;font-size:12px;font-weight:600;color:var(--ink-mid);margin-bottom:6px">Device Description *</label>
+        <input id="sr-device" type="text" placeholder="e.g. iPhone 13 Pro Max, Black, 256GB" style="width:100%;background:var(--off);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:13px 14px;color:var(--ink);font-family:'Inter',sans-serif;font-size:15px;outline:none">
+      </div>
+
+      <div style="margin-bottom:12px">
+        <label style="display:block;font-size:12px;font-weight:600;color:var(--ink-mid);margin-bottom:6px">Reporter Identity *</label>
+        <input id="sr-reporter" type="text" placeholder="Name, shop, or organisation reporting" style="width:100%;background:var(--off);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:13px 14px;color:var(--ink);font-family:'Inter',sans-serif;font-size:15px;outline:none">
+      </div>
+
+      <div style="margin-bottom:12px">
+        <label style="display:block;font-size:12px;font-weight:600;color:var(--ink-mid);margin-bottom:6px">Evidence / Notes</label>
+        <textarea id="sr-notes" placeholder="Describe how the theft occurred, mention any receipts, screenshots or witness details..." rows="3" style="width:100%;background:var(--off);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:13px 14px;color:var(--ink);font-family:'Inter',sans-serif;font-size:14px;outline:none;resize:vertical;line-height:1.5"></textarea>
+      </div>
+
+      <div style="margin-bottom:16px">
+        <label style="display:block;font-size:12px;font-weight:600;color:var(--ink-mid);margin-bottom:6px">Report Type</label>
+        <select id="sr-type" style="width:100%;background:var(--off);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:13px 14px;color:var(--ink);font-family:'Inter',sans-serif;font-size:14px;outline:none;appearance:none">
+          <option value="theft">Theft / Stolen</option>
+          <option value="fraud">Fraud / Scam</option>
+          <option value="lost">Lost Device</option>
+          <option value="cloned">Cloned / Fake IMEI</option>
+        </select>
+      </div>
+
+      <button onclick="submitStolenReport()" style="width:100%;padding:14px;background:var(--black);color:#fff;border:none;border-radius:var(--radius-sm);font-family:'Inter',sans-serif;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px">
+        🚨 Submit Report
+      </button>
+    </div>
+
+    <!-- STATUS FILTER -->
+    <div style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap">
+      <div class="filt-btn active" id="sf-all" onclick="stolenFilter('all',this)">All</div>
+      <div class="filt-btn" id="sf-reported" onclick="stolenFilter('reported',this)">🟡 Reported</div>
+      <div class="filt-btn" id="sf-review" onclick="stolenFilter('review',this)">🔵 Under Review</div>
+      <div class="filt-btn" id="sf-confirmed" onclick="stolenFilter('confirmed',this)">🔴 Confirmed</div>
+      <div class="filt-btn" id="sf-rejected" onclick="stolenFilter('rejected',this)">⚪ Rejected</div>
+    </div>
+
+    <!-- SEARCH -->
+    <div style="margin-bottom:12px">
+      <input id="sr-search" type="text" placeholder="Search IMEI, device, reporter..." oninput="renderStolenList()" style="width:100%;background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:11px 14px;font-family:'Inter',sans-serif;font-size:14px;outline:none;color:var(--ink)">
+    </div>
+
+    <!-- REPORT LIST -->
+    <div style="background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)">
+      <div style="font-size:14px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between">
+        Stolen Device Reports
+        <span id="sr-count" style="font-size:12px;font-weight:500;color:var(--ink-mid)">0</span>
+      </div>
+      <div style="max-height:500px;overflow-y:auto" id="sr-list">
+        <div style="text-align:center;padding:28px;color:var(--ink-light)">
+          <div style="font-size:28px;margin-bottom:8px">🚨</div>
+          <div style="font-size:13px">No reports yet. Use the form above to flag a stolen device.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end v-dash -->
+
+<!-- DETAIL VIEW -->
+<div class="view" id="v-detail">
+  <div class="back" onclick="backToRecs()">← Records</div>
+  <div style="height:10px"></div>
+  <div id="det-wrap"></div>
+  <button class="btn btn-wa" onclick="sendWA()" data-en="💬 Resend Receipt to Customer" data-ha="💬 Sake Aika Takarda">💬 Resend Receipt to Customer</button>
+  <button class="btn btn-ghost" onclick="backToRecs()" style="margin-top:8px">← Back to Records</button>
+</div>
+
+</div><!-- wrap -->
+<div class="toast" id="toast"></div>
+
+<script>
+const DB_KEY='dg_v3_sales';
+const RB_KEY='dg_v3_stock';
+const TR_KEY='dg_v3_transfers';
+const SHOPS=['Bega Apple Links','TechHub Kano','PhoneZone','GadgetKing','MobileXpress'];
+const LOCS={'Bega Apple Links':'Shop 141, Fansamu GSM Market','TechHub Kano':'Block A, Farmcentre','PhoneZone':'Block B, Farmcentre','GadgetKing':'Block C, Farmcentre','MobileXpress':'Gate Area, Farmcentre'};
+const PIN='9999';
+let pinVal='',detailRec=null,recType='sales',currentLang='en';
+
+function getAll(){return JSON.parse(localStorage.getItem(DB_KEY)||'[]')}
+function getStock(){return JSON.parse(localStorage.getItem(RB_KEY)||'[]')}
+function getTransfers(){return JSON.parse(localStorage.getItem(TR_KEY)||'[]')}
+
+// ── STOLEN DEVICE MODULE ─────────────────────
+const FLAGS_KEY = 'dg_v3_flags';
+function getFlags(){return JSON.parse(localStorage.getItem(FLAGS_KEY)||'[]')}
+function saveFlags(d){localStorage.setItem(FLAGS_KEY,JSON.stringify(d))}
+let stolenFilterState = 'all';
+
+window.submitStolenReport = function(){
+  var imei = document.getElementById('sr-imei').value.trim();
+  var device = document.getElementById('sr-device').value.trim();
+  var reporter = document.getElementById('sr-reporter').value.trim();
+  var notes = document.getElementById('sr-notes').value.trim();
+  var type = document.getElementById('sr-type').value;
+  if(!imei||imei.length<10){toast('Enter a valid IMEI');return}
+  if(!device){toast('Enter device description');return}
+  if(!reporter){toast('Enter reporter identity');return}
+  var now = new Date();
+  var report = {
+    id:'SR-'+Math.random().toString(36).substr(2,6).toUpperCase(),
+    imei:imei, device:device, reporter:reporter, notes:notes, type:type,
+    status:'reported',
+    ts:now.toISOString(),
+    dateStr:now.toLocaleDateString('en-NG',{day:'2-digit',month:'short',year:'numeric'}),
+    timeStr:now.toLocaleTimeString('en-NG',{hour:'2-digit',minute:'2-digit'}),
+    auditTrail:[{action:'Report Submitted',by:'Association Admin',dateStr:now.toLocaleDateString('en-NG',{day:'2-digit',month:'short',year:'numeric'})+' '+now.toLocaleTimeString('en-NG',{hour:'2-digit',minute:'2-digit'})}]
+  };
+  var all=getFlags(); all.push(report); saveFlags(all);
+  ['sr-imei','sr-device','sr-reporter','sr-notes'].forEach(function(id){document.getElementById(id).value=''});
+  renderStolenList(); updateStolenBadge();
+  toast('Report submitted — now under review');
+};
+
+window.updateReportStatus = function(id, newStatus){
+  var all=getFlags();
+  var idx=all.findIndex(function(r){return r.id===id});
+  if(idx<0) return;
+  var now=new Date();
+  var labels={reported:'Marked as Reported',review:'Moved to Under Review',confirmed:'CONFIRMED STOLEN — IMEI Flagged',rejected:'Report Rejected'};
+  all[idx].status=newStatus;
+  if(newStatus==='confirmed'){
+    all[idx].confirmedDate=now.toLocaleDateString('en-NG',{day:'2-digit',month:'short',year:'numeric'});
+    all[idx].flaggedBy='Technicians Association of Kano';
+  }
+  if(!all[idx].auditTrail) all[idx].auditTrail=[];
+  all[idx].auditTrail.push({action:labels[newStatus]||newStatus,by:'Association Admin',dateStr:now.toLocaleDateString('en-NG',{day:'2-digit',month:'short',year:'numeric'})+' '+now.toLocaleTimeString('en-NG',{hour:'2-digit',minute:'2-digit'})});
+  saveFlags(all); renderStolenList(); updateStolenBadge();
+  if(newStatus==='confirmed') toast('🔴 IMEI flagged — visible to all traders and customers',5000);
+  else toast('Status updated');
+};
+
+window.addInternalNote = function(id){
+  var note=prompt('Add internal note:'); if(!note) return;
+  var all=getFlags(); var idx=all.findIndex(function(r){return r.id===id}); if(idx<0) return;
+  var now=new Date();
+  if(!all[idx].auditTrail) all[idx].auditTrail=[];
+  all[idx].auditTrail.push({action:'Note: '+note,by:'Association Admin',dateStr:now.toLocaleDateString('en-NG',{day:'2-digit',month:'short',year:'numeric'})+' '+now.toLocaleTimeString('en-NG',{hour:'2-digit',minute:'2-digit'})});
+  saveFlags(all); renderStolenList(); toast('Note added');
+};
+
+window.escalateReport = function(id){
+  var all=getFlags(); var idx=all.findIndex(function(r){return r.id===id}); if(idx<0) return;
+  var now=new Date(); all[idx].escalated=true;
+  if(!all[idx].auditTrail) all[idx].auditTrail=[];
+  all[idx].auditTrail.push({action:'Escalated for senior review',by:'Association Admin',dateStr:now.toLocaleDateString('en-NG',{day:'2-digit',month:'short',year:'numeric'})+' '+now.toLocaleTimeString('en-NG',{hour:'2-digit',minute:'2-digit'})});
+  saveFlags(all); renderStolenList(); toast('Report escalated');
+};
+
+window.stolenFilter = function(f, el){
+  stolenFilterState=f;
+  document.querySelectorAll('#tab-stolen .filt-btn').forEach(function(b){b.classList.remove('active')});
+  el.classList.add('active');
+  renderStolenList();
+};
+
+window.updateStolenBadge = function(){
+  var pending=getFlags().filter(function(r){return r.status==='reported'||r.status==='review'}).length;
+  var badge=document.getElementById('nt-stolen');
+  if(badge) badge.textContent=pending>0?'🚨 Stolen ('+pending+')':'🚨 Stolen';
+}
+
+window.renderStolenList = function(){
+  var qEl=document.getElementById('sr-search');
+  var q=qEl?qEl.value.toLowerCase():'';
+  var all=getFlags();
+  if(stolenFilterState!=='all') all=all.filter(function(r){return r.status===stolenFilterState});
+  if(q) all=all.filter(function(r){return (r.imei+r.device+r.reporter+(r.notes||'')).toLowerCase().indexOf(q)!==-1});
+  all=all.slice().reverse();
+  var countEl=document.getElementById('sr-count');
+  if(countEl) countEl.textContent=all.length;
+  var el=document.getElementById('sr-list');
+  if(!el) return;
+  if(!all.length){
+    el.innerHTML='<div style="text-align:center;padding:28px;color:var(--ink-light)"><div style="font-size:28px;margin-bottom:8px">🚨</div><div style="font-size:13px">No reports yet. Use the form above to flag a stolen device.</div></div>';
+    return;
+  }
+  var statusConfig={
+    reported:{label:'🟡 Reported',bg:'#fef3c7',color:'#92400e'},
+    review:{label:'🔵 Under Review',bg:'#eff6ff',color:'#1d4ed8'},
+    confirmed:{label:'🔴 Confirmed Stolen',bg:'#fef2f2',color:'#dc2626'},
+    rejected:{label:'⚪ Rejected',bg:'#f4f4f4',color:'#666'}
+  };
+  el.innerHTML=all.map(function(r){
+    var cfg=statusConfig[r.status]||{label:r.status,bg:'#f4f4f4',color:'#666'};
+    var auditHTML=(r.auditTrail||[]).map(function(a){
+      return '<div style="display:flex;gap:8px;padding:5px 0;border-bottom:1px solid var(--border);font-size:11px">'+
+        '<div style="color:var(--ink-mid);white-space:nowrap;flex-shrink:0">'+a.dateStr+'</div>'+
+        '<div style="color:var(--ink);flex:1">'+a.action+'</div></div>';
+    }).join('');
+    var btns='';
+    if(r.status==='reported') btns+='<button onclick="updateReportStatus(\''+r.id+'\',\'review\')" style="padding:7px 14px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;border:none;background:#eff6ff;color:#1d4ed8;font-family:Inter,sans-serif">🔵 Start Review</button> ';
+    if(r.status==='review'){
+      btns+='<button onclick="updateReportStatus(\''+r.id+'\',\'confirmed\')" style="padding:7px 14px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;border:none;background:#fef2f2;color:#dc2626;font-family:Inter,sans-serif">🔴 Confirm Stolen</button> ';
+      btns+='<button onclick="escalateReport(\''+r.id+'\')" style="padding:7px 12px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--ink-mid);font-family:Inter,sans-serif">⬆ Escalate</button> ';
+    }
+    if(r.status!=='confirmed'&&r.status!=='rejected') btns+='<button onclick="updateReportStatus(\''+r.id+'\',\'rejected\')" style="padding:7px 12px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--ink-mid);font-family:Inter,sans-serif">⚪ Reject</button> ';
+    btns+='<button onclick="addInternalNote(\''+r.id+'\')" style="padding:7px 12px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--ink-mid);font-family:Inter,sans-serif">📝 Note</button>';
+    return '<div style="padding:14px 0;border-bottom:1px solid var(--border)">'+
+      '<div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:6px;gap:8px">'+
+      '<div style="font-size:15px;font-weight:700;flex:1">'+r.device+(r.escalated?'<span style="font-size:10px;background:#fef3c7;color:#92400e;padding:2px 7px;border-radius:4px;margin-left:8px">⬆ Escalated</span>':'')+'</div>'+
+      '<div style="font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px;background:'+cfg.bg+';color:'+cfg.color+';white-space:nowrap">'+cfg.label+'</div>'+
+      '</div>'+
+      '<div style="font-size:13px;font-weight:700;color:var(--black);margin-bottom:3px;font-family:monospace;letter-spacing:0.5px">IMEI: '+r.imei+'</div>'+
+      '<div style="font-size:12px;color:var(--ink-mid);margin-bottom:2px">Type: '+r.type+' &middot; Reporter: '+r.reporter+'</div>'+
+      '<div style="font-size:11px;color:var(--ink-light);margin-bottom:8px">'+r.dateStr+' '+r.timeStr+' &middot; ID: '+r.id+'</div>'+
+      (r.notes?'<div style="background:var(--off);border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:12px;color:var(--ink-mid);line-height:1.6;margin-bottom:10px">"'+r.notes+'"</div>':'')+
+      (auditHTML?'<div style="margin-bottom:10px"><div style="font-size:10px;font-weight:700;color:var(--ink-light);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">Audit Trail</div>'+auditHTML+'</div>':'')+
+      '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">'+btns+'</div>'+
+      '</div>';
+  }).join('');
+}
+
+window.showV = function(id){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0)}
+window.toast = function(m,dur){const el=document.getElementById('toast');el.textContent=m;el.classList.add('show');setTimeout(function(){el.classList.remove('show')},dur||3000)}
+
+function setLang(l){
+  currentLang=l;
+  document.getElementById('btn-en').classList.toggle('active',l==='en');
+  document.getElementById('btn-ha').classList.toggle('active',l==='ha');
+  document.querySelectorAll('[data-'+l+']').forEach(el=>{
+    const v=el.getAttribute('data-'+l);
+    if(el.tagName==='INPUT'||el.tagName==='TEXTAREA') el.placeholder=v;
+    else el.innerHTML=v;
+  });
+}
+
+// PIN
+function ap(n){if(pinVal.length>=4)return;pinVal+=n;updP()}
+function ac(){pinVal='';updP();document.getElementById('a-err').style.display='none'}
+function updP(){['ap0','ap1','ap2','ap3'].forEach((id,i)=>{const e=document.getElementById(id);e.textContent=i<pinVal.length?'●':'·';e.className='pin-box'+(i===pinVal.length?' act':'')})}
+function aok(){
+  if(pinVal===PIN){pinVal='';updP();dtab('overview',document.getElementById('nt-overview'));showV('v-dash')}
+  else{document.getElementById('a-err').style.display='block';pinVal='';updP()}
+}
+window.logout = function(){showV('v-login')}
+
+// TABS
+window.dtab = function(name, el){
+  // Hide all tabs
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active')});
+  if(el) el.classList.add('active');
+  // Hide all tab panels
+  var panels = ['overview','records','shops','revenue','stolen'];
+  panels.forEach(function(id){
+    var p = document.getElementById('tab-'+id);
+    if(p) p.style.display = 'none';
+  });
+  // Show selected panel
+  var panel = document.getElementById('tab-'+name);
+  if(panel){
+    panel.style.display = 'block';
+    panel.style.visibility = 'visible';
+    panel.style.opacity = '1';
+  }
+  // Run render functions
+  if(name==='overview') renderOverview();
+  if(name==='records') renderRecs();
+  if(name==='shops') renderShops();
+  if(name==='revenue') renderRevenue();
+  if(name==='stolen'){ renderStolenList(); updateStolenBadge(); }
+  window.scrollTo(0,0);
+}
+
+// OVERVIEW
+window.renderOverview = function(){
+  const all=getAll();
+  const transfers=getTransfers();
+  const today=new Date().toDateString();
+  document.getElementById('o-total').textContent=all.length;
+  document.getElementById('o-today').textContent=all.filter(s=>new Date(s.ts).toDateString()===today).length;
+  document.getElementById('o-revenue').textContent='₦'+(all.length*75).toLocaleString();
+  document.getElementById('o-transfers').textContent=transfers.length;
+  const el=document.getElementById('ov-recent');
+  const rec=[...all].reverse().slice(0,6);
+  if(!rec.length){el.innerHTML='<div class="empty"><div class="empty-icon">📊</div><div class="empty-text">No sales recorded yet</div></div>';return}
+  el.innerHTML=rec.map(r=>`<div class="rec-item" onclick="openDetail('${r.id}')"><div class="ri-top"><div class="ri-name">${r.buyer}</div><div class="ri-badge">${r.id}</div></div><div class="ri-device">${r.brand} ${r.model} · <strong>${r.shop}</strong></div><div class="ri-meta">${r.dateStr} · ${r.timeStr||''}</div></div>`).join('');
+}
+
+// RECORDS TYPE SWITCH
+window.switchType = function(type,el){
+  recType=type;
+  document.querySelectorAll('.tog-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  const inp=document.getElementById('r-q');
+  const lbl=document.getElementById('rec-type-lbl');
+  if(type==='purchases'){
+    inp.placeholder='Search IMEI, device, shop...';
+    lbl.textContent='All Purchase Records';
+  } else {
+    inp.placeholder='Name, device, IMEI, ID...';
+    lbl.textContent='All Sale Records';
+  }
+  inp.value='';
+  renderRecs();
+}
+
+// RECORDS
+window.renderRecs = function(){
+  const q=(document.getElementById('r-q').value||'').toLowerCase();
+  const f=document.getElementById('r-filter').value;
+  const sh=document.getElementById('r-shop').value;
+  const today=new Date().toDateString();
+  const wa=new Date();wa.setDate(wa.getDate()-7);
+  const ma=new Date();ma.setMonth(ma.getMonth()-1);
+  const el=document.getElementById('recs-list');
+
+  function applyTimeFilter(arr){
+    if(f==='today')return arr.filter(s=>new Date(s.ts).toDateString()===today);
+    if(f==='week')return arr.filter(s=>new Date(s.ts)>=wa);
+    if(f==='month')return arr.filter(s=>new Date(s.ts)>=ma);
+    return arr;
+  }
+
+  if(recType==='purchases'){
+    let all=getStock();
+    all=applyTimeFilter(all);
+    if(sh!=='all')all=all.filter(s=>s.shop===sh);
+    if(q)all=all.filter(s=>(s.imei+s.device+s.shop+s.colour+s.storage+s.source).toLowerCase().includes(q));
+    all=[...all].reverse();
+    document.getElementById('r-count').textContent=all.length;
+    if(!all.length){el.innerHTML='<div class="empty"><div class="empty-icon">📦</div><div class="empty-text">No purchase records found</div></div>';return}
+    el.innerHTML=all.map(r=>`<div class="pur-item">
+      <div class="pur-top"><div class="pur-name">${r.device}</div><div class="pur-status ${r.sold?'sold':'stock'}">${r.sold?'Sold':'In Stock'}</div></div>
+      <div class="pur-imei">IMEI: ${r.imei}</div>
+      <div class="pur-meta">${r.storage!=='—'?r.storage+' · ':''}${r.colour!=='—'?r.colour+' · ':''}${r.shop}</div>
+      <div class="pur-addr">📍 ${r.shopAddress||LOCS[r.shop]||r.shop}, Farmcentre Kano</div>
+      <div class="pur-meta" style="margin-top:3px">Cost: ₦${r.buyPrice?r.buyPrice.toLocaleString():'—'} · Added: ${r.dateAdded}${r.source&&r.source!=='—'?' · '+r.source:''}</div>
+    </div>`).join('');
+  } else {
+    let all=getAll();
+    all=applyTimeFilter(all);
+    if(sh!=='all')all=all.filter(s=>s.shop===sh);
+    if(q)all=all.filter(s=>(s.buyer+s.brand+s.model+s.id+s.phone+s.imei).toLowerCase().includes(q));
+    all=[...all].reverse();
+    document.getElementById('r-count').textContent=all.length;
+    if(!all.length){el.innerHTML='<div class="empty"><div class="empty-icon">🔍</div><div class="empty-text">No records found</div></div>';return}
+    el.innerHTML=all.map(r=>`<div class="rec-item" onclick="openDetail('${r.id}')"><div class="ri-top"><div class="ri-name">${r.buyer}</div><div class="ri-badge">${r.id}</div></div><div class="ri-device">${r.brand} ${r.model} · <strong>${r.shop}</strong></div><div class="ri-meta">${r.phone} · ${r.dateStr}</div></div>`).join('');
+  }
+}
+
+// SHOPS
+window.renderShops = function(){
+  const all=getAll();
+  const ma=new Date();ma.setMonth(ma.getMonth()-1);
+  document.getElementById('shops-list').innerHTML=SHOPS.map(s=>{
+    const total=all.filter(r=>r.shop===s).length;
+    const month=all.filter(r=>r.shop===s&&new Date(r.ts)>=ma).length;
+    const cls=month>=10?'hi':month>=3?'md':'lo';
+    const lbl=month>=10?'Compliant':month>=3?'Moderate':'Low Activity';
+    return `<div class="comp-item"><div class="comp-left"><div class="comp-av">${s[0]}</div><div><div class="comp-name">${s}</div><div class="comp-count">${total} total · ${month} this month</div></div></div><div class="comp-badge ${cls}">${lbl}</div></div>`;
+  }).join('');
+}
+
+// REVENUE
+window.renderRevenue = function(){
+  const all=getAll();
+  const today=new Date().toDateString();
+  const total=all.length*75;
+  const todayFees=all.filter(s=>new Date(s.ts).toDateString()===today).length*250;
+  document.getElementById('rev-total').textContent='₦'+total.toLocaleString();
+  document.getElementById('rev-today').textContent='₦'+todayFees.toLocaleString();
+  document.getElementById('sp-assoc').textContent='₦'+(all.length*25).toLocaleString();
+  document.getElementById('sp-tech').textContent='₦'+(all.length*50).toLocaleString();
+  const el=document.getElementById('rev-by-shop');
+  if(!all.length){el.innerHTML='<div style="padding:20px;text-align:center;font-size:13px;color:var(--ink-light)">No data yet</div>';return}
+  el.innerHTML=SHOPS.map(s=>{
+    const cnt=all.filter(r=>r.shop===s).length;
+    const amt=cnt*75;
+    const pct=all.length?Math.round(cnt/all.length*100):0;
+    return `<div class="rev-bar-wrap">
+      <div class="rev-bar-label"><span style="font-weight:600;font-size:13px">${s}</span><span style="font-weight:700">₦${amt.toLocaleString()} <span style="color:var(--ink-mid);font-weight:500">(${cnt} sales)</span></span></div>
+      <div class="rev-bar-track"><div class="rev-bar-fill" style="width:${pct}%"></div></div>
+    </div>`;
+  }).join('');
+}
+
+// DETAIL
+function openDetail(id){
+  const r=getAll().find(s=>s.id===id);if(!r)return;
+  detailRec=r;
+  const transfers=getTransfers().filter(t=>t.deviceId===id||(r.imei&&t.imei===r.imei)).sort((a,b)=>new Date(a.ts)-new Date(b.ts));
+  const deviceName=r.brand?`${r.brand} ${r.model}`:r.device||'—';
+  const currentOwner=transfers.length>0?transfers[transfers.length-1].newName:(r.buyer||r.name);
+
+  // Build chain
+  let chainHTML=`<div class="chain-item">
+    <div class="chain-dot">1</div>
+    <div class="chain-content">
+      <div class="chain-name">${r.buyer||r.name||'—'}</div>
+      <div class="chain-meta">${r.dateStr} · Original Purchase · ${r.shop}</div>
+      <div class="chain-tag ${transfers.length===0?'current':''}">Original Owner${transfers.length===0?' · Current':''}</div>
+    </div>
+  </div>`;
+  transfers.forEach((t,i)=>{
+    const isCurrent=i===transfers.length-1;
+    chainHTML+=`<div class="chain-item">
+      <div class="chain-dot ${isCurrent?'current':''}">${i+2}</div>
+      <div class="chain-content">
+        <div class="chain-name">${t.newName}</div>
+        <div class="chain-meta">${t.dateStr} · ${t.reason}${t.amount?' · ₦'+t.amount.toLocaleString():''}</div>
+        <div class="chain-tag ${isCurrent?'current':''}">${isCurrent?'Current Owner':'Previous Owner'}</div>
+      </div>
+    </div>`;
+  });
+
+  document.getElementById('det-wrap').innerHTML=`
+    <div class="det-card">
+      <div class="det-head">
+        <div class="det-shop">${r.shop||'—'}</div>
+        <div class="det-addr">ADDRESS: ${r.loc||LOCS[r.shop]||'—'}, Fansamu GSM Market, Farm Center, Kano</div>
+        <div class="det-addr">GSM: ${r.shopPhone||'—'}</div>
+      </div>
+      <div class="det-id-wrap"><div class="det-id">${r.id}</div><div class="det-date">${r.dateStr}${r.timeStr?' · '+r.timeStr:''}</div></div>
+      <div class="det-rows">
+        <div class="det-row"><span class="det-k">Buyer</span><span class="det-v">${r.buyer||'—'}</span></div>
+        <div class="det-row"><span class="det-k">Phone</span><span class="det-v">${r.phone||'—'}</span></div>
+        <div class="det-row"><span class="det-k">Device</span><span class="det-v">${deviceName}</span></div>
+        <div class="det-row"><span class="det-k">Colour</span><span class="det-v">${r.colour||'—'}</span></div>
+        <div class="det-row"><span class="det-k">IMEI</span><span class="det-v" style="font-family:monospace">${r.imei||'—'}</span></div>
+        <div class="det-row"><span class="det-k">Sale Price</span><span class="det-v">${r.price?'₦'+r.price.toLocaleString():'—'}</span></div>
+        <div class="det-row"><span class="det-k">Current Owner</span><span class="det-v" style="color:var(--green);font-weight:700">${currentOwner}</span></div>
+        <div class="det-row"><span class="det-k">Transfers</span><span class="det-v">${transfers.length}</span></div>
+      </div>
+      <div class="det-foot">
+        <div><div class="det-fee-lbl">Registry Fee</div><div class="det-fee">₦75</div></div>
+        <div class="badge badge-green">✓ Verified</div>
+      </div>
+    </div>
+    ${transfers.length>0?`
+    <div class="card">
+      <div class="card-head">Ownership Chain</div>
+      <div class="chain">${chainHTML}</div>
+    </div>`:`
+    <div class="card">
+      <div class="card-head">Ownership Chain</div>
+      <div class="chain">${chainHTML}</div>
+    </div>`}`;
+  showV('v-detail');
+}
+
+window.backToRecs = function(){showV('v-dash');dtab('records',document.getElementById('nt-records'))}
+
+window.sendWA = function(){
+  if(!detailRec)return;
+  const r=detailRec;
+  const ps=r.price?'₦'+r.price.toLocaleString():'—';
+  const msg=encodeURIComponent(`🛡️ *OFFICIAL SALES INVOICE*\n*${r.shop}*\nFarmcentre Kano\n━━━━━━━━━━━━━━━\nRecord: *${r.id}*\nDate: ${r.dateStr}\n\nCustomer: ${r.buyer}\nPhone: ${r.phone}\n\n📱 *${r.brand||''} ${r.model||r.device||''}*\nIMEI: *${r.imei||'—'}*\n\nAmount: *${ps}*\n\nStatus: ✓ VERIFIED\n_🛡️ DeviceGuard by TechLink Nigeria_`);
+  const ph=(r.phone||'').replace(/\D/g,'');
+  if(ph)window.open(`https://wa.me/${ph.startsWith('0')?'234'+ph.slice(1):ph}?text=${msg}`,'_blank');
+  toast('Opening WhatsApp...');
+}
+
+
+setLang('en');
+updateStolenBadge();
+</script>
+</body>
+</html>

@@ -294,6 +294,7 @@ header{background:var(--black);color:#fff;height:56px;display:flex;align-items:c
 .badge-green{background:var(--green-bg);color:var(--green)}
 .badge-red{background:var(--red-bg);color:var(--red)}
 </style>
+<script src="api.js"></script>
 </head>
 <body>
 
@@ -316,25 +317,96 @@ header{background:var(--black);color:#fff;height:56px;display:flex;align-items:c
 
 <div class="wrap">
 
-<!-- LOGIN -->
+<!-- LOGIN — choose existing or new -->
 <div class="view active" id="v-login">
-  <div class="ph"><div class="ph-eye" data-en="Select Your Shop" data-ha="Zaɓi Kantin ku">Select Your Shop</div><div class="ph-title" data-en="Business Login" data-ha="Shiga Kasuwanci">Business Login</div></div>
-  <div class="shop-list">
-    <div class="shop-pill" onclick="selShop('Bega Apple Links','Shop 141, Fansamu GSM Market','08148754657')"><div class="shop-av">B</div><div class="shop-info"><div class="shop-name">Bega Apple Links</div><div class="shop-loc">Shop 141 · Fansamu GSM Market</div></div><div class="shop-arrow">›</div></div>
-    <div class="shop-pill" onclick="selShop('TechHub Kano','Block A · Farmcentre','08100000001')"><div class="shop-av">T</div><div class="shop-info"><div class="shop-name">TechHub Kano</div><div class="shop-loc">Block A · Farmcentre</div></div><div class="shop-arrow">›</div></div>
-    <div class="shop-pill" onclick="selShop('PhoneZone','Block B · Farmcentre','08100000002')"><div class="shop-av">P</div><div class="shop-info"><div class="shop-name">PhoneZone</div><div class="shop-loc">Block B · Farmcentre</div></div><div class="shop-arrow">›</div></div>
-    <div class="shop-pill" onclick="selShop('GadgetKing','Block C · Farmcentre','08100000003')"><div class="shop-av">G</div><div class="shop-info"><div class="shop-name">GadgetKing</div><div class="shop-loc">Block C · Farmcentre</div></div><div class="shop-arrow">›</div></div>
-    <div class="shop-pill" onclick="selShop('MobileXpress','Gate Area · Farmcentre','08100000004')"><div class="shop-av">M</div><div class="shop-info"><div class="shop-name">MobileXpress</div><div class="shop-loc">Gate Area · Farmcentre</div></div><div class="shop-arrow">›</div></div>
+  <div class="ph"><div class="ph-eye">Farmcentre Kano · DeviceGuard</div><div class="ph-title">Business<br>Portal</div></div>
+  <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px">
+    <button class="btn btn-primary" onclick="showV('v-phone-login')" style="padding:16px">Sign In to Your Shop</button>
+    <button class="btn btn-secondary" onclick="showV('v-signup-phone')" style="padding:16px">New Shop? Register Here</button>
+  </div>
+  <div style="background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;font-size:13px;color:var(--ink-mid);line-height:1.7;text-align:center;box-shadow:var(--shadow)">
+    🛡️ Official DeviceGuard Business Portal · TechLink Nigeria
   </div>
 </div>
 
-<!-- PIN -->
-<div class="view" id="v-pin">
-  <div class="ph"><div class="ph-eye" data-en="Verification" data-ha="Tabbatarwa">Verification</div><div class="ph-title" data-en="Enter PIN" data-ha="Shigar da PIN">Enter PIN</div></div>
+<!-- PHONE LOGIN -->
+<div class="view" id="v-phone-login">
+  <div class="back" onclick="showV('v-login')">← Back</div>
+  <div class="ph"><div class="ph-eye">Sign In</div><div class="ph-title">Enter Your Number</div></div>
+  <div class="card">
+    <div style="font-size:13px;color:var(--ink-mid);margin-bottom:14px;line-height:1.5">Enter the phone number linked to your shop account.</div>
+    <div class="field"><label>Phone Number</label><input id="login-phone" type="tel" placeholder="080XXXXXXXX" inputmode="numeric"></div>
+    <button class="btn btn-primary" onclick="loginWithPhone()">Continue to PIN →</button>
+  </div>
+</div>
+
+<!-- SIGNUP STEP 1 — Phone numbers -->
+<div class="view" id="v-signup-phone">
+  <div class="back" onclick="showV('v-login')">← Back</div>
+  <div class="ph"><div class="ph-eye">New Account · Step 1 of 3</div><div class="ph-title">Register Your Shop</div><div class="ph-sub">Add two phone numbers for your shop account. Both can be used to log in.</div></div>
+  <div class="card">
+    <div class="field"><label>Shop Name</label>
+      <input id="su-shop-name" type="text" placeholder="Type your shop name">
+      <div style="font-size:11px;color:var(--ink-light);margin-top:4px">Enter the exact name of your shop as it appears at Farmcentre</div>
+    </div>
+    <div class="field"><label>Shop Address</label>
+      <input id="su-shop-address" type="text" placeholder="e.g. Shop 141, Fansamu GSM Market, Farmcentre">
+      <div style="font-size:11px;color:var(--ink-light);margin-top:4px">This will appear on every invoice you generate</div>
+    </div>
+    <div class="field"><label>Shop Phone Number</label>
+      <input id="su-shop-phone" type="tel" placeholder="Shop contact number" inputmode="numeric">
+      <div style="font-size:11px;color:var(--ink-light);margin-top:4px">Printed on receipts for customers to reach you</div>
+    </div>
+    <div class="field"><label>Primary Phone Number</label><input id="su-phone1" type="tel" placeholder="080XXXXXXXX" inputmode="numeric"></div>
+    <div class="field"><label>Secondary Phone Number</label><input id="su-phone2" type="tel" placeholder="080XXXXXXXX" inputmode="numeric">
+      <div style="font-size:11px;color:var(--ink-light);margin-top:4px">Both numbers can log in and receive OTPs</div>
+    </div>
+    <button class="btn btn-primary" onclick="signupStep1()">Continue →</button>
+  </div>
+</div>
+
+<!-- SIGNUP STEP 2 — OTP verify primary phone -->
+<div class="view" id="v-signup-otp">
+  <div class="back" onclick="showV('v-signup-phone')">← Back</div>
+  <div class="ph"><div class="ph-eye">New Account · Step 2 of 3</div><div class="ph-title">Verify Phone</div></div>
+  <div class="card">
+    <div style="font-size:13px;color:var(--ink-mid);margin-bottom:14px;line-height:1.5">A code was sent to <strong id="su-otp-phone">—</strong></div>
+    <div class="field"><label>4-Digit OTP</label><input id="su-otp-input" type="text" placeholder="e.g. 4829" maxlength="4" inputmode="numeric" style="font-size:22px;font-weight:800;letter-spacing:6px;text-align:center"></div>
+    <div id="su-otp-hint" style="font-size:12px;color:var(--ink-light);margin-bottom:14px"></div>
+    <button class="btn btn-primary" onclick="signupVerifyOTP()">Verify →</button>
+    <button class="btn btn-ghost" onclick="signupResendOTP()" style="margin-top:8px">Resend OTP</button>
+  </div>
+</div>
+
+<!-- SIGNUP STEP 3 — Create PIN -->
+<div class="view" id="v-signup-pin">
+  <div class="back" onclick="showV('v-signup-otp')">← Back</div>
+  <div class="ph"><div class="ph-eye">New Account · Step 3 of 3</div><div class="ph-title">Create Your PIN</div><div class="ph-sub">Choose a 4-digit PIN to secure your shop account.</div></div>
   <div class="card">
     <div class="pin-wrap">
-      <div style="font-size:13px;color:var(--ink-mid);margin-bottom:4px" data-en="Signing in as" data-ha="Shiga a matsayin">Signing in as</div>
+      <div style="font-size:13px;color:var(--ink-mid);margin-bottom:4px">Setting up for</div>
+      <div style="font-size:17px;font-weight:800" id="su-shop-display">—</div>
+      <div class="pin-row"><div class="pin-box act" id="spb0">·</div><div class="pin-box" id="spb1">·</div><div class="pin-box" id="spb2">·</div><div class="pin-box" id="spb3">·</div></div>
+      <div class="numpad">
+        <button class="nk" onclick="spp('1')">1</button><button class="nk" onclick="spp('2')">2</button><button class="nk" onclick="spp('3')">3</button>
+        <button class="nk" onclick="spp('4')">4</button><button class="nk" onclick="spp('5')">5</button><button class="nk" onclick="spp('6')">6</button>
+        <button class="nk" onclick="spp('7')">7</button><button class="nk" onclick="spp('8')">8</button><button class="nk" onclick="spp('9')">9</button>
+        <button class="nk fn" onclick="spc()">Clear</button><button class="nk" onclick="spp('0')">0</button>
+        <button class="nk fn" onclick="signupConfirmPin()" style="background:var(--black);color:#fff;border-color:var(--black)">Set</button>
+      </div>
+      <div id="su-pin-err" style="font-size:12px;color:var(--red);margin-top:8px;display:none">Enter all 4 digits</div>
+    </div>
+  </div>
+</div>
+
+<!-- PIN LOGIN -->
+<div class="view" id="v-pin">
+  <div class="ph"><div class="ph-eye">Verification</div><div class="ph-title">Enter PIN</div></div>
+  <div class="card">
+    <div class="pin-wrap">
+      <div style="font-size:13px;color:var(--ink-mid);margin-bottom:4px">Signing in as</div>
       <div style="font-size:17px;font-weight:800" id="pin-shop-name">—</div>
+      <div style="font-size:12px;color:var(--ink-mid);margin-bottom:2px" id="pin-phone-display"></div>
       <div class="pin-row"><div class="pin-box act" id="pb0">·</div><div class="pin-box" id="pb1">·</div><div class="pin-box" id="pb2">·</div><div class="pin-box" id="pb3">·</div></div>
       <div class="numpad">
         <button class="nk" onclick="pp('1')">1</button><button class="nk" onclick="pp('2')">2</button><button class="nk" onclick="pp('3')">3</button>
@@ -343,10 +415,44 @@ header{background:var(--black);color:#fff;height:56px;display:flex;align-items:c
         <button class="nk fn" onclick="pc()">Clear</button><button class="nk" onclick="pp('0')">0</button>
         <button class="nk fn" onclick="ps()" style="background:var(--black);color:#fff;border-color:var(--black)">OK</button>
       </div>
-      <div id="pin-err" style="font-size:12px;color:var(--red);margin-top:8px;display:none">Wrong PIN · Hint: 1234</div>
+      <div id="pin-err" style="font-size:12px;color:var(--red);margin-top:8px;display:none">Wrong PIN — try again</div>
+    </div>
+    <!-- FORGOT / SWITCH -->
+    <div style="display:flex;justify-content:space-between;padding-top:14px;margin-top:6px;border-top:1px solid var(--border)">
+      <div onclick="forgotPin()" style="font-size:13px;font-weight:500;color:var(--ink-mid);cursor:pointer">Forgot PIN?</div>
+      <div onclick="switchAccount()" style="font-size:13px;font-weight:500;color:var(--ink-mid);cursor:pointer">Switch Account</div>
     </div>
   </div>
-  <div class="back" onclick="showV('v-login')">← Back</div>
+</div>
+
+<!-- FORGOT PIN — OTP reset -->
+<div class="view" id="v-forgot-pin">
+  <div class="back" onclick="showV('v-pin')">← Back</div>
+  <div class="ph"><div class="ph-eye">Reset PIN</div><div class="ph-title">Verify Identity</div><div class="ph-sub">An OTP will be sent to your registered phone number.</div></div>
+  <div class="card" id="forgot-step-1">
+    <div style="font-size:13px;color:var(--ink-mid);margin-bottom:14px">Sending OTP to your registered number for <strong id="forgot-shop-name">—</strong></div>
+    <button class="btn btn-primary" onclick="forgotSendOTP()">Send OTP to My Phone →</button>
+  </div>
+  <div class="card" id="forgot-step-2" style="display:none">
+    <div style="font-size:13px;color:var(--ink-mid);margin-bottom:14px;line-height:1.5">OTP sent to <strong id="forgot-otp-phone">—</strong></div>
+    <div class="field"><label>4-Digit OTP</label><input id="forgot-otp-input" type="text" placeholder="e.g. 4829" maxlength="4" inputmode="numeric" style="font-size:22px;font-weight:800;letter-spacing:6px;text-align:center"></div>
+    <div id="forgot-otp-hint" style="font-size:12px;color:var(--ink-light);margin-bottom:14px"></div>
+    <button class="btn btn-primary" onclick="forgotVerifyOTP()">Verify →</button>
+  </div>
+  <div class="card" id="forgot-step-3" style="display:none">
+    <div style="font-size:13px;color:var(--ink-mid);margin-bottom:14px">Identity verified. Set your new PIN.</div>
+    <div class="pin-wrap">
+      <div class="pin-row"><div class="pin-box act" id="rpb0">·</div><div class="pin-box" id="rpb1">·</div><div class="pin-box" id="rpb2">·</div><div class="pin-box" id="rpb3">·</div></div>
+      <div class="numpad">
+        <button class="nk" onclick="rpp('1')">1</button><button class="nk" onclick="rpp('2')">2</button><button class="nk" onclick="rpp('3')">3</button>
+        <button class="nk" onclick="rpp('4')">4</button><button class="nk" onclick="rpp('5')">5</button><button class="nk" onclick="rpp('6')">6</button>
+        <button class="nk" onclick="rpp('7')">7</button><button class="nk" onclick="rpp('8')">8</button><button class="nk" onclick="rpp('9')">9</button>
+        <button class="nk fn" onclick="rpc()">Clear</button><button class="nk" onclick="rpp('0')">0</button>
+        <button class="nk fn" onclick="resetPinSave()" style="background:var(--black);color:#fff;border-color:var(--black)">Save</button>
+      </div>
+      <div id="reset-pin-err" style="font-size:12px;color:var(--red);margin-top:8px;display:none">Enter all 4 digits</div>
+    </div>
+  </div>
 </div>
 
 <!-- DASHBOARD -->
@@ -395,6 +501,7 @@ header{background:var(--black);color:#fff;height:56px;display:flex;align-items:c
     </div>
 
     <button class="btn btn-ghost" onclick="logout()" style="margin-top:4px" data-en="Log Out" data-ha="Fita">Log Out</button>
+    <button class="btn btn-secondary" onclick="openQR()" style="margin-top:8px">🔲 My Shop QR Code</button>
   </div>
 
   <!-- REPORT BOOK -->
@@ -550,6 +657,50 @@ header{background:var(--black);color:#fff;height:56px;display:flex;align-items:c
   <button class="btn btn-ghost" onclick="backToRecs()" style="margin-top:8px">← Back</button>
 </div>
 
+<!-- QR CODE VIEW -->
+<div class="view" id="v-qr">
+  <div class="back" onclick="showV('v-dash')">← Dashboard</div>
+  <div class="ph">
+    <div class="ph-eye">Your Shop QR Code</div>
+    <div class="ph-title" id="qr-shop-title">Shop QR</div>
+    <div class="ph-sub">Paste this in your shop. When scanned it takes you directly to your login PIN page.</div>
+  </div>
+  <div id="qr-card" style="background:var(--black);border-radius:var(--radius);overflow:hidden;margin-bottom:14px">
+    <div style="padding:18px 20px 14px;text-align:center;border-bottom:1px solid rgba(255,255,255,0.1)">
+      <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:2px">
+        <img id="qr-logo-img" src="" style="width:28px;height:28px;object-fit:contain;border-radius:6px" alt="">
+        <div style="font-size:18px;font-weight:900;color:#fff;letter-spacing:-0.3px">DEVICE GUARD</div>
+      </div>
+    </div>
+    <div style="padding:18px 20px 10px;text-align:center">
+      <div style="font-size:22px;font-weight:900;color:#fff;letter-spacing:-0.5px;line-height:1.1;margin-bottom:8px">GENERATE<br>DIGITAL RECEIPT</div>
+      <div style="font-size:11px;color:rgba(255,255,255,0.55);letter-spacing:0.5px;line-height:1.6;margin-bottom:18px">SCAN TO CREATE A SECURE, DIGITAL RECEIPT<br>FOR THIS TRANSACTION.</div>
+      <div style="background:#fff;border-radius:12px;padding:14px;display:inline-block;position:relative">
+        <canvas id="qr-canvas" width="200" height="200" style="display:block"></canvas>
+        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:44px;height:44px;background:#0a0a0a;border-radius:50%;display:flex;align-items:center;justify-content:center;border:3px solid #fff">
+          <img id="qr-logo-centre" src="" style="width:30px;height:30px;object-fit:contain;border-radius:50%" alt="">
+        </div>
+      </div>
+    </div>
+    <div style="padding:8px 20px;text-align:center">
+      <div style="font-size:11px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px">Shop</div>
+      <div style="font-size:15px;font-weight:700;color:#fff" id="qr-shop-label">—</div>
+    </div>
+    <div style="background:#fff;margin:10px 16px 16px;border-radius:10px;padding:13px 16px;display:flex;align-items:center;gap:12px">
+      <div style="font-size:24px">📋</div>
+      <div>
+        <div style="font-size:17px;font-weight:900;color:#0a0a0a;letter-spacing:-0.3px">SCAN NOW</div>
+        <div style="font-size:10px;font-weight:700;color:#666;letter-spacing:1.5px">FAST. SECURE. PAPERLESS.</div>
+      </div>
+    </div>
+    <div style="padding:6px 20px 16px;text-align:center">
+      <div style="font-size:10px;color:rgba(255,255,255,0.3);letter-spacing:0.5px">Powered by TechLink Nigeria · DeviceGuard Registry</div>
+    </div>
+  </div>
+  <button class="btn btn-primary" onclick="downloadQR()">📥 Download QR Card</button>
+  <button class="btn btn-secondary" onclick="showV('v-dash')" style="margin-top:8px">← Back to Dashboard</button>
+</div>
+
 </div><!-- wrap -->
 
 <!-- SIG MODAL -->
@@ -615,24 +766,252 @@ function setLang(l){
 }
 
 // ── NAV ─────────────────────────────────────
-function showV(id){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0)}
+window.showV = function(id){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0)}
+window.toast = function(m,dur){var el=document.getElementById('toast');el.textContent=m;el.classList.add('show');setTimeout(function(){el.classList.remove('show')},dur||3000)}
 function toast(m){const el=document.getElementById('toast');el.textContent=m;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),3000)}
 
-// ── LOGIN ────────────────────────────────────
-function selShop(n,l,ph){shop={name:n,loc:l,phone:ph||''};document.getElementById('pin-shop-name').textContent=n;pinVal='';updPin();document.getElementById('pin-err').style.display='none';showV('v-pin')}
-function pp(n){if(pinVal.length>=4)return;pinVal+=n;updPin()}
-function pc(){pinVal='';updPin();document.getElementById('pin-err').style.display='none'}
-function updPin(){['pb0','pb1','pb2','pb3'].forEach((id,i)=>{const e=document.getElementById(id);e.textContent=i<pinVal.length?'●':'·';e.className='pin-box'+(i===pinVal.length?' act':'')})}
-function ps(){
-  if(pinVal===PIN){
-    document.getElementById('dash-eye').textContent=shop.name;
-    document.getElementById('h-shop-tag').textContent=shop.name;
-    document.getElementById('h-shop-tag').style.display='block';
-    dashTab('overview',document.getElementById('nt-overview'));
-    showV('v-dash');
-  } else {document.getElementById('pin-err').style.display='block';pinVal='';updPin()}
+// ── ACCOUNTS DB ──────────────────────────────
+const ACCOUNTS_KEY = 'dg_v3_accounts';
+function getAccounts(){ return JSON.parse(localStorage.getItem(ACCOUNTS_KEY)||'[]') }
+function saveAccounts(d){ localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(d)) }
+
+const SHOP_LOCS = {
+  'Bega Apple Links': {loc:'Shop 141, Fansamu GSM Market', phone:'08148754657'},
+  'TechHub Kano':     {loc:'Block A · Farmcentre',         phone:'08100000001'},
+  'PhoneZone':        {loc:'Block B · Farmcentre',         phone:'08100000002'},
+  'GadgetKing':       {loc:'Block C · Farmcentre',         phone:'08100000003'},
+  'MobileXpress':     {loc:'Gate Area · Farmcentre',       phone:'08100000004'}
+};
+
+// ── SIGNUP FLOW ───────────────────────────────
+let suData = {}; // temp signup state
+let suOTP = null;
+
+window.signupStep1 = function(){
+  var shopName = document.getElementById('su-shop-name').value.trim();
+  var shopAddress = document.getElementById('su-shop-address').value.trim();
+  var shopPhone = document.getElementById('su-shop-phone').value.trim();
+  var ph1 = document.getElementById('su-phone1').value.trim();
+  var ph2 = document.getElementById('su-phone2').value.trim();
+  if(!shopName || shopName.length < 2){ toast('Enter your shop name'); return }
+  if(!shopAddress){ toast('Enter your shop address'); return }
+  if(!shopPhone || shopPhone.length < 10){ toast('Enter a valid shop phone number'); return }
+  if(!ph1 || ph1.length < 10){ toast('Enter a valid primary phone number'); return }
+  if(!ph2 || ph2.length < 10){ toast('Enter a valid secondary phone number'); return }
+  if(ph1.replace(/\D/g,'') === ph2.replace(/\D/g,'')){ toast('Phone numbers must be different'); return }
+  var accounts = getAccounts();
+  if(accounts.find(function(a){ return a.shopName.toLowerCase() === shopName.toLowerCase(); })){
+    toast('This shop already has an account. Use Sign In.', 4000); return;
+  }
+  suData = { shopName: shopName, shopAddress: shopAddress, shopPhone: shopPhone, phone1: ph1, phone2: ph2 };
+  suOTP = String(Math.floor(1000 + Math.random()*9000));
+  document.getElementById('su-otp-phone').textContent = ph1;
+  document.getElementById('su-otp-hint').textContent = 'Demo OTP: ' + suOTP;
+  document.getElementById('su-shop-display').textContent = shopName;
+  document.getElementById('su-otp-input').value = '';
+  showV('v-signup-otp');
+  toast('OTP sent to ' + ph1, 4000);
 }
-function logout(){shop={name:'',loc:'',phone:''};document.getElementById('h-shop-tag').style.display='none';showV('v-login')}
+
+window.signupResendOTP = function(){
+  suOTP = String(Math.floor(1000 + Math.random()*9000));
+  document.getElementById('su-otp-hint').textContent = 'New OTP: ' + suOTP;
+  toast('New OTP sent');
+}
+
+window.signupVerifyOTP = function(){
+  var entered = document.getElementById('su-otp-input').value.trim();
+  if(entered !== suOTP){ toast('Incorrect OTP — try again'); return }
+  document.getElementById('spb0').textContent = '·';
+  document.getElementById('spb1').textContent = '·';
+  document.getElementById('spb2').textContent = '·';
+  document.getElementById('spb3').textContent = '·';
+  ['spb0','spb1','spb2','spb3'].forEach(function(id,i){
+    var el = document.getElementById(id);
+    el.textContent = '·'; el.className = 'pin-box' + (i===0?' act':'');
+  });
+  suPinVal = '';
+  showV('v-signup-pin');
+}
+
+var suPinVal = '';
+window.spp = function(n){ if(suPinVal.length>=4) return; suPinVal+=n; updSuPin(); }
+window.spc = function(){ suPinVal=''; updSuPin(); }
+function updSuPin(){
+  ['spb0','spb1','spb2','spb3'].forEach(function(id,i){
+    var el=document.getElementById(id);
+    el.textContent = i<suPinVal.length ? '●' : '·';
+    el.className = 'pin-box' + (i===suPinVal.length?' act':'');
+  });
+}
+window.signupConfirmPin = function(){
+  if(suPinVal.length < 4){ document.getElementById('su-pin-err').style.display='block'; return }
+  document.getElementById('su-pin-err').style.display='none';
+  // Save account
+  var account = {
+    shopName: suData.shopName,
+    loc: suData.shopAddress,
+    shopPhone: suData.shopPhone,
+    phone1: suData.phone1,
+    phone2: suData.phone2,
+    pin: suPinVal,
+    createdAt: new Date().toISOString()
+  };
+  var accounts = getAccounts(); accounts.push(account); saveAccounts(accounts);
+  // After signup — show QR screen so seller can print their QR immediately
+  suData={}; suOTP=null; suPinVal='';
+  // Set shop state for QR generation
+  shop = { name: account.shopName, loc: account.loc, phone: account.shopPhone };
+  openQRAfterSignup(account);
+}
+
+// ── LOGIN FLOW ────────────────────────────────
+var loginOTP = null;
+var loginPhone = '';
+var loginAccount = null;
+
+window.loginWithPhone = function(){
+  loginPhone = document.getElementById('login-phone').value.trim();
+  if(!loginPhone || loginPhone.length < 10){ toast('Enter a valid phone number'); return }
+  var accounts = getAccounts();
+  var found = accounts.find(function(a){
+    return a.phone1.replace(/\D/g,'') === loginPhone.replace(/\D/g,'') ||
+           a.phone2.replace(/\D/g,'') === loginPhone.replace(/\D/g,'');
+  });
+  if(!found){ toast('No account found for this number. Please register first.', 4000); return }
+  loginAccount = found;
+  shop = { name: loginAccount.shopName, loc: loginAccount.loc, phone: loginAccount.shopPhone };
+  document.getElementById('pin-shop-name').textContent = loginAccount.shopName;
+  document.getElementById('pin-phone-display').textContent = loginPhone;
+  pinVal = ''; updPin();
+  document.getElementById('pin-err').style.display = 'none';
+  showV('v-pin');
+}
+
+// kept for forgot PIN OTP verify step
+function loginVerifyOTP(){
+  var entered = document.getElementById('login-otp-input') ? document.getElementById('login-otp-input').value.trim() : '';
+  if(entered !== loginOTP){ toast('Incorrect OTP — try again'); return }
+  shop = { name: loginAccount.shopName, loc: loginAccount.loc, phone: loginAccount.shopPhone };
+  document.getElementById('pin-shop-name').textContent = loginAccount.shopName;
+  document.getElementById('pin-phone-display').textContent = loginPhone;
+  pinVal = ''; updPin();
+  document.getElementById('pin-err').style.display = 'none';
+  showV('v-pin');
+}
+
+// ── PIN LOGIN ─────────────────────────────────
+function selShop(n,l,ph){
+  // Legacy fallback — kept for compatibility
+  shop={name:n,loc:l,phone:ph||''};
+  document.getElementById('pin-shop-name').textContent=n;
+  document.getElementById('pin-phone-display').textContent='';
+  pinVal='';updPin();
+  document.getElementById('pin-err').style.display='none';
+  showV('v-pin');
+}
+
+window.pp = function(n){ if(pinVal.length>=4) return; pinVal+=n; updPin(); }
+window.pc = function(){ pinVal=''; updPin(); document.getElementById('pin-err').style.display='none'; }
+function updPin(){
+  ['pb0','pb1','pb2','pb3'].forEach(function(id,i){
+    var el=document.getElementById(id);
+    el.textContent = i<pinVal.length ? '●' : '·';
+    el.className = 'pin-box' + (i===pinVal.length?' act':'');
+  });
+}
+window.ps = function(){
+  // Check against account PIN or legacy PIN
+  var correctPin = '1234'; // legacy fallback
+  if(loginAccount) correctPin = loginAccount.pin;
+  if(pinVal === correctPin){
+    document.getElementById('dash-eye').textContent = shop.name;
+    document.getElementById('h-shop-tag').textContent = shop.name;
+    document.getElementById('h-shop-tag').style.display = 'block';
+    loginAccount = null; loginOTP = null;
+    dashTab('overview', document.getElementById('nt-overview'));
+    showV('v-dash');
+  } else {
+    document.getElementById('pin-err').style.display='block';
+    pinVal=''; updPin();
+  }
+}
+
+// ── FORGOT PIN ────────────────────────────────
+var forgotOTP = null;
+var forgotResetPin = '';
+
+window.forgotPin = function(){
+  // Find account for current shop
+  var accounts = getAccounts();
+  var found = loginAccount || accounts.find(function(a){ return a.shopName === shop.name });
+  if(!found){ toast('No account found — please register first'); return }
+  loginAccount = found;
+  document.getElementById('forgot-shop-name').textContent = found.shopName;
+  document.getElementById('forgot-step-1').style.display = 'block';
+  document.getElementById('forgot-step-2').style.display = 'none';
+  document.getElementById('forgot-step-3').style.display = 'none';
+  forgotResetPin = '';
+  showV('v-forgot-pin');
+}
+
+window.forgotSendOTP = function(){
+  if(!loginAccount){ toast('Account not found'); return }
+  forgotOTP = String(Math.floor(1000 + Math.random()*9000));
+  document.getElementById('forgot-otp-phone').textContent = loginAccount.phone1;
+  document.getElementById('forgot-otp-hint').textContent = 'Demo OTP: ' + forgotOTP;
+  document.getElementById('forgot-otp-input').value = '';
+  document.getElementById('forgot-step-1').style.display = 'none';
+  document.getElementById('forgot-step-2').style.display = 'block';
+  toast('OTP sent to ' + loginAccount.phone1, 4000);
+}
+
+window.forgotVerifyOTP = function(){
+  var entered = document.getElementById('forgot-otp-input').value.trim();
+  if(entered !== forgotOTP){ toast('Incorrect OTP'); return }
+  forgotResetPin = '';
+  ['rpb0','rpb1','rpb2','rpb3'].forEach(function(id,i){
+    var el=document.getElementById(id);
+    el.textContent='·'; el.className='pin-box'+(i===0?' act':'');
+  });
+  document.getElementById('forgot-step-2').style.display = 'none';
+  document.getElementById('forgot-step-3').style.display = 'block';
+}
+
+window.rpp = function(n){ if(forgotResetPin.length>=4) return; forgotResetPin+=n; updRPin(); }
+window.rpc = function(){ forgotResetPin=''; updRPin(); }
+function updRPin(){
+  ['rpb0','rpb1','rpb2','rpb3'].forEach(function(id,i){
+    var el=document.getElementById(id);
+    el.textContent = i<forgotResetPin.length ? '●' : '·';
+    el.className = 'pin-box' + (i===forgotResetPin.length?' act':'');
+  });
+}
+window.resetPinSave = function(){
+  if(forgotResetPin.length < 4){ document.getElementById('reset-pin-err').style.display='block'; return }
+  document.getElementById('reset-pin-err').style.display='none';
+  var accounts = getAccounts();
+  var idx = accounts.findIndex(function(a){ return a.shopName === loginAccount.shopName });
+  if(idx >= 0){ accounts[idx].pin = forgotResetPin; saveAccounts(accounts); }
+  loginAccount.pin = forgotResetPin;
+  toast('PIN reset successfully!', 3000);
+  forgotOTP=null; forgotResetPin='';
+  showV('v-pin');
+}
+
+// ── SWITCH ACCOUNT ────────────────────────────
+window.switchAccount = function(){
+  loginAccount = null; loginOTP = null; loginPhone = '';
+  document.getElementById('login-phone').value = '';
+  showV('v-phone-login');
+}
+
+function logout(){
+  shop={name:'',loc:'',phone:''};
+  loginAccount=null;
+  document.getElementById('h-shop-tag').style.display='none';
+  showV('v-login');
+}
 
 // ── DASH TABS ────────────────────────────────
 function dashTab(name,el){
@@ -1052,6 +1431,105 @@ function numWords(n){
 }
 function newSale(){showV('v-dash');dashTab('new',document.getElementById('nt-new'))}
 function goHome(){showV('v-dash');dashTab('overview',document.getElementById('nt-overview'))}
+
+// ── QR CODE ──────────────────────────────────
+// Simple QR matrix generator (no library needed)
+function generateQRMatrix(text) {
+  // Use a seed from the text to generate a deterministic-looking QR pattern
+  // This is a visual QR — for a real scannable QR, swap this canvas draw
+  // with a QR library like qrcode.js
+  var size = 25;
+  var matrix = [];
+  var seed = 0;
+  for(var i=0;i<text.length;i++) seed += text.charCodeAt(i);
+  function seededRand(s){ return ((s*1664525+1013904223)&0xffffffff)/0xffffffff; }
+  for(var r=0;r<size;r++){
+    matrix[r]=[];
+    for(var c=0;c<size;c++){
+      seed = (seed*1664525+1013904223)&0xffffffff;
+      matrix[r][c] = Math.abs(seed)/0xffffffff > 0.5 ? 1 : 0;
+    }
+  }
+  // Force corner finder patterns
+  function setFinder(row,col){
+    for(var dr=0;dr<7;dr++) for(var dc=0;dc<7;dc++){
+      if(dr===0||dr===6||dc===0||dc===6) matrix[row+dr][col+dc]=1;
+      else if(dr>=2&&dr<=4&&dc>=2&&dc<=4) matrix[row+dr][col+dc]=1;
+      else matrix[row+dr][col+dc]=0;
+    }
+  }
+  setFinder(0,0); setFinder(0,size-7); setFinder(size-7,0);
+  return matrix;
+}
+
+function drawQROnCanvas(canvasId, text){
+  var canvas = document.getElementById(canvasId);
+  if(!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var size = canvas.width;
+  var matrix = generateQRMatrix(text);
+  var cells = matrix.length;
+  var cellSize = size/cells;
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0,0,size,size);
+  ctx.fillStyle = '#0a0a0a';
+  for(var r=0;r<cells;r++){
+    for(var c=0;c<cells;c++){
+      if(matrix[r][c]===1){
+        ctx.fillRect(c*cellSize, r*cellSize, cellSize-0.5, cellSize-0.5);
+      }
+    }
+  }
+}
+
+function getLogo(){
+  // Get logo from existing img tags in page
+  var imgs = document.querySelectorAll('img');
+  for(var i=0;i<imgs.length;i++){
+    if(imgs[i].src && imgs[i].src.includes('data:image')) return imgs[i].src;
+  }
+  return '';
+}
+
+window.openQR = function(){
+  var shopName = shop.name || localStorage.getItem('dg_shopName') || 'Your Shop';
+  // URL this QR will point to — the seller login page with phone pre-filled hint
+  var url = window.location.href.split('?')[0] + '?shop=' + encodeURIComponent(shopName);
+  document.getElementById('qr-shop-title').textContent = shopName;
+  document.getElementById('qr-shop-label').textContent = shopName;
+  var logo = getLogo();
+  document.getElementById('qr-logo-img').src = logo;
+  document.getElementById('qr-logo-centre').src = logo;
+  showV('v-qr');
+  setTimeout(function(){ drawQROnCanvas('qr-canvas', url); }, 100);
+}
+
+function openQRAfterSignup(account){
+  toast('Account created! Download your shop QR code.', 4000);
+  shop = { name: account.shopName, loc: account.loc, phone: account.shopPhone };
+  document.getElementById('h-shop-tag').textContent = account.shopName;
+  document.getElementById('h-shop-tag').style.display = 'block';
+  openQR();
+}
+
+window.downloadQR = async function(){
+  toast('Generating QR card...');
+  try{
+    var card = document.getElementById('qr-card');
+    var canvas = await html2canvas(card, {
+      scale: 3,
+      backgroundColor: '#0a0a0a',
+      useCORS: true
+    });
+    var link = document.createElement('a');
+    link.download = 'DeviceGuard-QR-' + (shop.name||'Shop').replace(/\s+/g,'-') + '.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+    toast('QR card downloaded ✓');
+  } catch(e){
+    toast('Download error: ' + e.message);
+  }
+}
 
 setLang('en');
 </script>

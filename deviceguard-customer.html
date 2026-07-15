@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DeviceGuard — Customer</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--white:#fff;--off:#fafafa;--bg:#f4f4f4;--border:#e5e5e5;--border-strong:#c8c8c8;--ink-light:#aaa;--ink-mid:#666;--ink:#1a1a1a;--black:#0a0a0a;--green:#16a34a;--green-bg:#f0fdf4;--green-border:#bbf7d0;--red:#dc2626;--red-bg:#fef2f2;--radius:14px;--radius-sm:10px;--shadow:0 1px 4px rgba(0,0,0,0.06);--shadow-md:0 4px 16px rgba(0,0,0,0.08)}
+body{background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;min-height:100vh}
+header{background:var(--black);color:#fff;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;position:sticky;top:0;z-index:100}
+.h-left{display:flex;align-items:center;gap:10px}
+.h-logo-img{width:34px;height:34px;border-radius:8px;overflow:hidden;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.h-logo-img img{width:32px;height:32px;object-fit:contain}
+.h-logo-text{font-size:17px;font-weight:800;letter-spacing:-0.3px}
+.h-logo-text span{opacity:0.35}
+.h-logo-sub{font-size:10px;color:rgba(255,255,255,0.4);margin-top:1px}
+.lang-pill{display:flex;background:rgba(255,255,255,0.08);border-radius:6px;overflow:hidden}
+.lang-btn{font-size:11px;font-weight:500;padding:4px 10px;cursor:pointer;color:rgba(255,255,255,0.4);background:transparent;border:none;font-family:'Inter',sans-serif}
+.lang-btn.active{background:rgba(255,255,255,0.15);color:#fff}
+.wrap{max-width:460px;margin:0 auto;padding:0 16px 80px}
+.view{display:none}.view.active{display:block;animation:up 0.2s ease}
+@keyframes up{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.back{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:500;color:var(--ink-mid);cursor:pointer;padding:18px 0 2px}
+.ph{padding:16px 0 18px}
+.ph-eye{font-size:11px;font-weight:600;color:var(--ink-light);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.ph-title{font-size:26px;font-weight:800;letter-spacing:-0.6px;line-height:1.1}
+.ph-sub{font-size:14px;color:var(--ink-mid);margin-top:6px;line-height:1.5}
+.hero{padding:28px 0 20px;text-align:center}
+.hero-shield{width:64px;height:64px;background:var(--black);border-radius:18px;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;overflow:hidden}
+.hero-shield img{width:56px;height:56px;object-fit:contain}
+.hero-title{font-size:28px;font-weight:800;letter-spacing:-0.8px;line-height:1.1;margin-bottom:8px}
+.hero-sub{font-size:14px;color:var(--ink-mid);line-height:1.6;max-width:300px;margin:0 auto}
+.action-list{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
+.action{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;box-shadow:var(--shadow);transition:all 0.15s}
+.action:hover{border-color:var(--black);box-shadow:var(--shadow-md);transform:translateY(-1px)}
+.action-left{display:flex;align-items:center;gap:14px}
+.action-ico{width:44px;height:44px;border-radius:12px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.action-title{font-size:15px;font-weight:700}
+.action-sub{font-size:12px;color:var(--ink-mid);margin-top:2px}
+.action-arrow{color:var(--ink-light);font-size:18px}
+.card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:12px;box-shadow:var(--shadow)}
+.card-title{font-size:13px;font-weight:600;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.field{margin-bottom:13px}
+.field label{display:block;font-size:12px;font-weight:600;color:var(--ink-mid);margin-bottom:6px}
+.field input,.field select,.field textarea{width:100%;background:var(--off);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:13px 14px;color:var(--ink);font-family:'Inter',sans-serif;font-size:15px;outline:none;appearance:none;transition:border-color 0.15s}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--black);background:var(--white)}
+.field input::placeholder,.field textarea::placeholder{color:var(--ink-light)}
+.field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23999' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:40px;background-color:var(--off)}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.field-hint{font-size:11px;color:var(--ink-light);margin-top:4px}
+.stepbar{display:flex;gap:4px;margin-bottom:18px}
+.seg{height:3px;flex:1;background:var(--border);border-radius:2px}
+.seg.done,.seg.active{background:var(--black)}
+.btn{width:100%;padding:15px;border:none;border-radius:var(--radius-sm);cursor:pointer;font-family:'Inter',sans-serif;font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.15s}
+.btn-primary{background:var(--black);color:#fff}
+.btn-secondary{background:var(--white);color:var(--ink);border:1.5px solid var(--border-strong)}
+.btn-ghost{background:transparent;color:var(--ink-mid);font-size:13px}
+.btn-wa{background:#25d366;color:#fff}
+.btn+.btn{margin-top:8px}
+.info{background:var(--off);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;font-size:13px;color:var(--ink-mid);line-height:1.6;margin-bottom:14px;display:flex;gap:10px}
+.badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px}
+.badge-green{background:var(--green-bg);color:var(--green)}
+.result-card{border-radius:var(--radius);overflow:hidden;margin-bottom:14px;box-shadow:var(--shadow-md)}
+.result-head{padding:18px 20px;display:flex;align-items:center;gap:12px}
+.result-head.found{background:var(--green);color:#fff}
+.result-head.notfound{background:var(--red);color:#fff}
+.result-head.stolen{background:#7f1d1d;color:#fff}
+.result-head-icon{width:38px;height:38px;border-radius:10px;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.result-head-title{font-size:16px;font-weight:700}
+.result-head-sub{font-size:12px;opacity:0.75;margin-top:2px}
+.result-body{background:var(--white);border:1px solid var(--border);border-top:none;border-radius:0 0 var(--radius) var(--radius)}
+.result-row{display:flex;justify-content:space-between;padding:11px 20px;border-bottom:1px solid var(--border);gap:12px;font-size:14px}
+.result-row:last-child{border-bottom:none}
+.result-key{font-size:12px;font-weight:500;color:var(--ink-mid);flex-shrink:0}
+.result-val{font-weight:500;text-align:right;word-break:break-word}
+.receipt{background:var(--white);border-radius:var(--radius);border:1px solid var(--border);overflow:hidden;margin-bottom:14px;box-shadow:var(--shadow-md)}
+.rec-head{background:var(--black);color:#fff;padding:16px 18px;text-align:center}
+.rec-head-logo{font-size:20px;font-weight:800}
+.rec-head-sub{font-size:10px;color:rgba(255,255,255,0.4);margin-top:3px;letter-spacing:0.5px}
+.rec-id-wrap{padding:14px 18px;border-bottom:1px solid var(--border)}
+.rec-id{font-size:20px;font-weight:800}
+.rec-date{font-size:12px;color:var(--ink-mid);margin-top:3px}
+.rec-rows{padding:0 4px}
+.rec-row{display:flex;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--border);font-size:13px;gap:12px}
+.rec-row:last-child{border-bottom:none}
+.rec-k{color:var(--ink-mid);font-size:12px;font-weight:500;flex-shrink:0}
+.rec-v{font-weight:500;text-align:right;word-break:break-word}
+.rec-footer{background:var(--off);padding:13px 18px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--border)}
+.rec-fee-lbl{font-size:11px;color:var(--ink-mid);font-weight:500}
+.rec-fee{font-size:20px;font-weight:800}
+.suc{text-align:center;padding:28px 0 16px}
+.suc-icon{width:60px;height:60px;border-radius:50%;background:var(--black);color:#fff;display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 14px}
+.suc-title{font-size:22px;font-weight:800}
+.suc-sub{font-size:13px;color:var(--ink-mid);margin-top:6px;line-height:1.5}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--black);color:#fff;padding:12px 20px;border-radius:8px;font-size:13px;font-weight:500;z-index:999;white-space:nowrap;transition:transform 0.25s;box-shadow:var(--shadow-md)}
+.toast.show{transform:translateX(-50%) translateY(0)}
+</style>
+<script src="api.js"></script>
+</head>
+<body>
+<header>
+  <div class="h-left">
+    <div class="h-logo-img"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAAAAACPAi4CAAAAIGNIUk0AAHomAACAhAAA+gAAAIDoAAB1MAAA6mAAADqYAAAXcJy6UTwAAAACYktHRAD/h4/MvwAAAAd0SU1FB+oFDxY7I232TOoAAAFxSURBVFjD7ZdLmoQwCITpfH0M7n+yOsgseloDFA91MZtxp6H+AIEkvt7y7FkP9f+AAQBoDF71MkJERG8DvrPrPcB3dpSIHHDqyjgSgNMUCApAjDxFRACSxIF/toA67XR0Axwlo16nBcNHEOeGCHQbdqX5rtW/9lBjtDPaXmjGO0CrbwCDZlgP9SVgoq8AI30BmOlzgNEXG9sa6Yv1XDN9Tli93n2bAHj+MAZ4vVaE1etrwqr1ABrCqvXitlO0gLh+TRTLqpk+RIEUYOfDBs59WFal1P9wrCgFWIqdaCO47twPFmyjIVl6WMBAzMmEEKiSuoJxwoWAoA8bSp7EaGuCBjfLCmk3TDgMYCS2mWJrcQ/Oa4AacFrK/oKBZhuGH754U+27UcsDlfgXPKgILL4YQk6g+SE5yAg8vyyJnJCsD10FRsjWt7jqavHeePAxxkQ/vq2n5ZlX4uHE3f8FYYfcFQ9O4f1/JiHddxXQPn//5/oD2hdz9xTM/WgAAAAASUVORK5CYII=" alt="DeviceGuard"></div>
+    <div>
+      <div class="h-logo-text">Device<span>Guard</span></div>
+      <div class="h-logo-sub">by TechLink Nigeria</div>
+    </div>
+  </div>
+  <div class="lang-pill">
+    <button class="lang-btn active" id="btn-en" onclick="setLang('en')">EN</button>
+    <button class="lang-btn" id="btn-ha" onclick="setLang('ha')">HA</button>
+  </div>
+</header>
+<div class="wrap">
+
+<!-- HOME -->
+<div class="view active" id="v-home">
+  <div class="hero">
+    <div class="hero-shield"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAAAAACPAi4CAAAAIGNIUk0AAHomAACAhAAA+gAAAIDoAAB1MAAA6mAAADqYAAAXcJy6UTwAAAACYktHRAD/h4/MvwAAAAd0SU1FB+oFDxY7I232TOoAAAFxSURBVFjD7ZdLmoQwCITpfH0M7n+yOsgseloDFA91MZtxp6H+AIEkvt7y7FkP9f+AAQBoDF71MkJERG8DvrPrPcB3dpSIHHDqyjgSgNMUCApAjDxFRACSxIF/toA67XR0Axwlo16nBcNHEOeGCHQbdqX5rtW/9lBjtDPaXmjGO0CrbwCDZlgP9SVgoq8AI30BmOlzgNEXG9sa6Yv1XDN9Tli93n2bAHj+MAZ4vVaE1etrwqr1ABrCqvXitlO0gLh+TRTLqpk+RIEUYOfDBs59WFal1P9wrCgFWIqdaCO47twPFmyjIVl6WMBAzMmEEKiSuoJxwoWAoA8bSp7EaGuCBjfLCmk3TDgMYCS2mWJrcQ/Oa4AacFrK/oKBZhuGH754U+27UcsDlfgXPKgILL4YQk6g+SE5yAg8vyyJnJCsD10FRsjWt7jqavHeePAxxkQ/vq2n5ZlX4uHE3f8FYYfcFQ9O4f1/JiHddxXQPn//5/oD2hdz9xTM/WgAAAAASUVORK5CYII=" alt="DeviceGuard"></div>
+    <div class="hero-title">Your Device.<br>Protected.</div>
+    <div class="hero-sub">Register your purchase or verify a device on the official Farmcentre Kano registry.</div>
+  </div>
+  <div class="action-list">
+    <div class="action" onclick="showV('v-register')">
+      <div class="action-left"><div class="action-ico">&#x1F4DD;</div><div>
+        <div class="action-title">Register My Device</div>
+        <div class="action-sub">Add new purchase to the registry</div>
+      </div></div><div class="action-arrow">&#x203A;</div>
+    </div>
+    <div class="action" onclick="showV('v-check')">
+      <div class="action-left"><div class="action-ico">&#x1F50D;</div><div>
+        <div class="action-title">Check a Device</div>
+        <div class="action-sub">Verify registration and stolen status</div>
+      </div></div><div class="action-arrow">&#x203A;</div>
+    </div>
+  </div>
+  <div style="background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;font-size:13px;color:var(--ink-mid);line-height:1.7;text-align:center;box-shadow:var(--shadow)">
+    &#x1F6E1;&#xFE0F; Official anti-theft registry for Farmcentre Kano, powered by TechLink Nigeria.
+  </div>
+</div>
+
+<!-- REGISTER -->
+<div class="view" id="v-register">
+  <div class="back" onclick="showV('v-home')">&#x2190; Back</div>
+  <div class="ph"><div class="ph-eye">New Registration</div><div class="ph-title">Register Device</div><div class="ph-sub">Add your device to the official Farmcentre Kano anti-theft registry.</div></div>
+  <div class="stepbar"><div class="seg active" id="rs1"></div><div class="seg" id="rs2"></div><div class="seg" id="rs3"></div></div>
+  <div id="reg-s1">
+    <div class="card">
+      <div class="card-title">Device Details</div>
+      <div class="field"><label>Brand &amp; Model</label><input id="reg-device" type="text" placeholder="e.g. Tecno Camon 30 Pro"></div>
+      <div class="field"><label>IMEI &#x2014; dial *#06#</label><input id="reg-imei" type="text" placeholder="15-digit IMEI" inputmode="numeric"><div class="field-hint">Dial *#06# on your phone to find your IMEI</div></div>
+      <div class="field-row">
+        <div class="field"><label>Colour</label><input id="reg-colour" type="text" placeholder="e.g. Black"></div>
+        <div class="field"><label>Storage</label><select id="reg-storage"><option value="">&#x2014;</option><option>16GB</option><option>32GB</option><option>64GB</option><option>128GB</option><option>256GB</option><option>512GB</option><option>1TB</option></select></div>
+      </div>
+      <div class="field"><label>Shop Purchased From</label>
+        <select id="reg-shop"><option value="">&#x2014; Select shop &#x2014;</option><option>Bega Apple Links</option><option>TechHub Kano</option><option>PhoneZone</option><option>GadgetKing</option><option>MobileXpress</option><option>Other</option></select>
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="regNext1()">Continue &#x2192;</button>
+  </div>
+  <div id="reg-s2" style="display:none">
+    <div class="info"><div>&#x2139;&#xFE0F;</div><span>Your details are used only for ownership verification and are not shared publicly.</span></div>
+    <div class="card">
+      <div class="card-title">Your Details</div>
+      <div class="field"><label>Full Name</label><input id="reg-name" type="text" placeholder="e.g. Aminu Ibrahim Musa"></div>
+      <div class="field"><label>Phone Number</label><input id="reg-phone" type="tel" placeholder="080XXXXXXXX" inputmode="numeric"></div>
+      <div class="field"><label>Address</label><input id="reg-address" type="text" placeholder="e.g. Nasarawa GRA, Kano"></div>
+    </div>
+    <button class="btn btn-primary" onclick="regNext2()">Continue &#x2192;</button>
+    <button class="btn btn-ghost" onclick="regGo(1)" style="margin-top:8px">&#x2190; Back</button>
+  </div>
+  <div id="reg-s3" style="display:none">
+    <div class="info"><div>&#x26A0;&#xFE0F;</div><span>A registry fee of &#x20A6;75 applies. Your device will be permanently recorded.</span></div>
+    <div class="card"><div class="card-title">Confirm Details</div><div id="reg-summary"></div></div>
+    <button class="btn btn-primary" onclick="submitReg()">&#x1F6E1;&#xFE0F; Register My Device</button>
+    <button class="btn btn-ghost" onclick="regGo(2)" style="margin-top:8px">&#x2190; Back</button>
+  </div>
+</div>
+
+<!-- REGISTER SUCCESS -->
+<div class="view" id="v-reg-success">
+  <div class="suc"><div class="suc-icon">&#x2713;</div><div class="suc-title">Device Registered!</div><div class="suc-sub">Your device is now on the official Farmcentre Kano anti-theft registry.</div></div>
+  <div class="receipt">
+    <div class="rec-head"><div class="rec-head-logo">DeviceGuard</div><div class="rec-head-sub">TECHLINK REGISTRY &middot; FARMCENTRE KANO</div></div>
+    <div class="rec-id-wrap"><div class="rec-id" id="cr-id">&#x2014;</div><div class="rec-date" id="cr-date">&#x2014;</div></div>
+    <div class="rec-rows">
+      <div class="rec-row"><span class="rec-k">Owner</span><span class="rec-v" id="cr-name">&#x2014;</span></div>
+      <div class="rec-row"><span class="rec-k">Phone</span><span class="rec-v" id="cr-phone">&#x2014;</span></div>
+      <div class="rec-row"><span class="rec-k">Device</span><span class="rec-v" id="cr-device">&#x2014;</span></div>
+      <div class="rec-row"><span class="rec-k">IMEI</span><span class="rec-v" id="cr-imei">&#x2014;</span></div>
+      <div class="rec-row"><span class="rec-k">Colour</span><span class="rec-v" id="cr-colour">&#x2014;</span></div>
+      <div class="rec-row"><span class="rec-k">Shop</span><span class="rec-v" id="cr-shop">&#x2014;</span></div>
+    </div>
+    <div class="rec-footer"><div><div class="rec-fee-lbl">Registry Fee</div><div class="rec-fee">&#x20A6;75</div></div><div class="badge badge-green">&#x2713; Verified</div></div>
+  </div>
+  <button class="btn btn-wa" onclick="sendWAReg()">&#x1F4AC; Send to WhatsApp</button>
+  <button class="btn btn-secondary" onclick="showV('v-home')" style="margin-top:8px">&#x2190; Back to Home</button>
+</div>
+
+<!-- CHECK -->
+<div class="view" id="v-check">
+  <div class="back" onclick="showV('v-home')">&#x2190; Back</div>
+  <div class="ph"><div class="ph-eye">Device Lookup</div><div class="ph-title">Check Device</div><div class="ph-sub">Enter a Record ID or IMEI to verify registration and check if a device has been reported stolen.</div></div>
+  <div class="card">
+    <div class="field"><label>Record ID or IMEI</label><input id="check-input" type="text" placeholder="DG-XXXXXX or 15-digit IMEI"></div>
+    <button class="btn btn-primary" onclick="doCheck()">Search Registry</button>
+  </div>
+  <div id="check-result"></div>
+</div>
+
+</div>
+<div class="toast" id="toast"></div>
+<script>
+const DB_KEY = 'dg_v3_sales';
+const CUST_KEY = 'dg_v3_cust_reg';
+const FLAGS_KEY = 'dg_v3_flags';
+
+function getSales(){ return JSON.parse(localStorage.getItem(DB_KEY)||'[]') }
+function getCustRegs(){ return JSON.parse(localStorage.getItem(CUST_KEY)||'[]') }
+function saveCustRegs(d){ localStorage.setItem(CUST_KEY, JSON.stringify(d)) }
+function getFlags(){ return JSON.parse(localStorage.getItem(FLAGS_KEY)||'[]') }
+
+let currentLang = 'en';
+let curReg = null;
+
+window.showV = function(id){
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+};
+
+window.toast = function(m, dur){
+  dur = dur||3000;
+  var el = document.getElementById('toast');
+  el.textContent = m; el.classList.add('show');
+  setTimeout(function(){ el.classList.remove('show'); }, dur);
+};
+
+function setLang(l){
+  currentLang = l;
+  document.getElementById('btn-en').classList.toggle('active', l==='en');
+  document.getElementById('btn-ha').classList.toggle('active', l==='ha');
+}
+
+function regGo(n){
+  [1,2,3].forEach(function(i){
+    document.getElementById('reg-s'+i).style.display = i===n ? 'block' : 'none';
+    var s = document.getElementById('rs'+i);
+    s.className = 'seg';
+    if(i < n) s.classList.add('done');
+    if(i === n) s.classList.add('active');
+  });
+}
+
+function regNext1(){
+  var device = document.getElementById('reg-device').value.trim();
+  var imei = document.getElementById('reg-imei').value.trim();
+  var shop = document.getElementById('reg-shop').value;
+  if(!device){ toast('Enter device brand and model'); return; }
+  if(!imei || imei.length < 10){ toast('Enter a valid IMEI'); return; }
+  if(!shop){ toast('Select the shop you bought from'); return; }
+  var clean = imei.replace(/[^0-9]/g, '');
+  var stolen = getFlags().find(function(f){ return f.imei && f.imei.replace(/[^0-9]/g,'') === clean && f.status === 'confirmed'; });
+  if(stolen){ toast('This IMEI is flagged as stolen', 5000); return; }
+  var all = getSales().concat(getCustRegs());
+  if(all.find(function(r){ return r.imei && r.imei.replace(/[^0-9]/g,'') === clean; })){ toast('This IMEI is already registered', 4000); return; }
+  regGo(2);
+}
+
+function regNext2(){
+  var name = document.getElementById('reg-name').value.trim();
+  var phone = document.getElementById('reg-phone').value.trim();
+  if(!name){ toast('Enter your full name'); return; }
+  if(!phone || phone.length < 10){ toast('Enter a valid phone number'); return; }
+  var rows = [
+    ['Device', document.getElementById('reg-device').value.trim()],
+    ['IMEI', document.getElementById('reg-imei').value.trim()],
+    ['Colour', document.getElementById('reg-colour').value.trim() || '-'],
+    ['Storage', document.getElementById('reg-storage').value || '-'],
+    ['Shop', document.getElementById('reg-shop').value],
+    ['Name', name], ['Phone', phone],
+    ['Address', document.getElementById('reg-address').value.trim() || '-']
+  ];
+  document.getElementById('reg-summary').innerHTML = rows.map(function(row){
+    return '<div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);font-size:14px;gap:12px"><span style="font-size:12px;font-weight:500;color:var(--ink-mid);flex-shrink:0">'+row[0]+'</span><span style="font-weight:500;text-align:right;word-break:break-word">'+row[1]+'</span></div>';
+  }).join('');
+  regGo(3);
+}
+
+function submitReg(){
+  var now = new Date();
+  var reg = {
+    id: 'DG-'+Math.random().toString(36).substr(2,6).toUpperCase(),
+    type: 'customer-self',
+    device: document.getElementById('reg-device').value.trim(),
+    imei: document.getElementById('reg-imei').value.trim(),
+    colour: document.getElementById('reg-colour').value.trim() || '-',
+    storage: document.getElementById('reg-storage').value || '-',
+    shop: document.getElementById('reg-shop').value,
+    name: document.getElementById('reg-name').value.trim(),
+    buyer: document.getElementById('reg-name').value.trim(),
+    phone: document.getElementById('reg-phone').value.trim(),
+    address: document.getElementById('reg-address').value.trim() || '-',
+    ts: now.toISOString(),
+    dateStr: now.toLocaleDateString('en-NG',{day:'2-digit',month:'short',year:'numeric'}),
+    timeStr: now.toLocaleTimeString('en-NG',{hour:'2-digit',minute:'2-digit'}),
+    fee: 75
+  };
+  var all = getCustRegs(); all.push(reg); saveCustRegs(all);
+  curReg = reg;
+  document.getElementById('cr-id').textContent = reg.id;
+  document.getElementById('cr-date').textContent = reg.dateStr + ' - ' + reg.timeStr;
+  document.getElementById('cr-name').textContent = reg.name;
+  document.getElementById('cr-phone').textContent = reg.phone;
+  document.getElementById('cr-device').textContent = reg.device;
+  document.getElementById('cr-imei').textContent = reg.imei;
+  document.getElementById('cr-colour').textContent = reg.colour + (reg.storage !== '-' ? ' - ' + reg.storage : '');
+  document.getElementById('cr-shop').textContent = reg.shop;
+  ['reg-device','reg-imei','reg-colour','reg-name','reg-phone','reg-address'].forEach(function(id){ document.getElementById(id).value = ''; });
+  document.getElementById('reg-shop').value = '';
+  document.getElementById('reg-storage').value = '';
+  regGo(1);
+  showV('v-reg-success');
+}
+
+function sendWAReg(){
+  if(!curReg) return;
+  var r = curReg;
+  var txt = 'DeviceGuard Registration Receipt' +
+    '%0AFarmcentre Kano' +
+    '%0ARecord ID: ' + r.id +
+    '%0ADate: ' + r.dateStr +
+    '%0ADevice: ' + r.device +
+    '%0AIMEI: ' + r.imei +
+    '%0AOwner: ' + r.name + ' - ' + r.phone +
+    '%0AShop: ' + r.shop +
+    '%0AFee: 75 Verified' +
+    '%0ADeviceGuard by TechLink Nigeria';
+  var ph = r.phone.replace(/[^0-9]/g, '');
+  if(ph.charAt(0) === '0') ph = '234' + ph.slice(1);
+  window.open('https://wa.me/' + ph + '?text=' + txt, '_blank');
+}
+
+function doCheck(){
+  var q = document.getElementById('check-input').value.trim().toLowerCase();
+  if(!q){ toast('Enter a Record ID or IMEI'); return; }
+  var el = document.getElementById('check-result');
+  var imeiQ = q.replace(/[^0-9]/g, '');
+
+  var stolen = getFlags().find(function(f){
+    return f.imei && f.imei.replace(/[^0-9]/g,'') === imeiQ && f.status === 'confirmed';
+  });
+
+  if(stolen){
+    el.innerHTML = '<div class="result-card">' +
+      '<div class="result-head stolen">' +
+      '<div class="result-head-icon">&#x1F6A8;</div>' +
+      '<div><div class="result-head-title">Flagged as Stolen</div>' +
+      '<div class="result-head-sub">Verified by Technician Association of Kano</div></div>' +
+      '</div>' +
+      '<div class="result-body">' +
+      '<div class="result-row"><span class="result-key">IMEI</span><span class="result-val" style="font-family:monospace">' + stolen.imei + '</span></div>' +
+      '<div class="result-row"><span class="result-key">Status</span><span class="result-val" style="color:var(--red);font-weight:700">Confirmed Stolen</span></div>' +
+      '<div class="result-row"><span class="result-key">Flagged</span><span class="result-val">' + (stolen.confirmedDate||stolen.dateStr||'-') + '</span></div>' +
+      '<div style="padding:12px 20px;font-size:13px;color:var(--red);line-height:1.6;background:var(--red-bg);font-weight:500">Do not purchase this device.</div>' +
+      '</div></div>';
+    return;
+  }
+
+  var all = getSales().concat(getCustRegs());
+  var r = all.find(function(s){
+    return s.id.toLowerCase() === q || (s.imei && s.imei.replace(/[^0-9]/g,'').indexOf(imeiQ) !== -1);
+  });
+
+  if(!r){
+    el.innerHTML = '<div class="result-card">' +
+      '<div class="result-head notfound">' +
+      '<div class="result-head-icon">&#x2715;</div>' +
+      '<div><div class="result-head-title">Not Registered</div>' +
+      '<div class="result-head-sub">No record found in the registry</div></div>' +
+      '</div>' +
+      '<div class="result-body">' +
+      '<div style="padding:14px 20px;font-size:13px;color:var(--ink-mid);line-height:1.6">This device is not in the Farmcentre Kano registry. Ask the seller to register the sale.</div>' +
+      '</div></div>' +
+      '<button class="btn btn-primary" onclick="showV(\'v-register\')" style="margin-top:8px">Register This Device</button>';
+    return;
+  }
+
+  var dn = r.brand ? r.brand + ' ' + r.model : (r.device || '-');
+  el.innerHTML = '<div class="result-card">' +
+    '<div class="result-head found">' +
+    '<div class="result-head-icon">&#x2713;</div>' +
+    '<div><div class="result-head-title">Registered Device</div>' +
+    '<div class="result-head-sub">Legitimate purchase verified</div></div>' +
+    '</div>' +
+    '<div class="result-body">' +
+    '<div class="result-row"><span class="result-key">Record ID</span><span class="result-val" style="font-weight:700">' + r.id + '</span></div>' +
+    '<div class="result-row"><span class="result-key">Owner</span><span class="result-val">' + (r.buyer||r.name||'-') + '</span></div>' +
+    '<div class="result-row"><span class="result-key">Device</span><span class="result-val">' + dn + '</span></div>' +
+    '<div class="result-row"><span class="result-key">IMEI</span><span class="result-val" style="font-family:monospace">' + (r.imei||'-') + '</span></div>' +
+    '<div class="result-row"><span class="result-key">Shop</span><span class="result-val">' + (r.shop||'-') + '</span></div>' +
+    '<div class="result-row"><span class="result-key">Status</span><span class="result-val" style="color:var(--green);font-weight:700">Legitimate Purchase</span></div>' +
+    '</div></div>' +
+    '<button class="btn btn-ghost" onclick="document.getElementById(\'check-result\').innerHTML=\'\';document.getElementById(\'check-input\').value=\'\'" style="margin-top:8px">Search Again</button>';
+}
+
+setLang('en');
+</script>
+</body>
+</html>

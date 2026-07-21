@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script src="api.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DeviceGuard — Business Portal</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{--white:#fff;--off:#fafafa;--bg:#f4f4f4;--border:#e5e5e5;--border-strong:#c8c8c8;--ink-light:#aaa;--ink-mid:#666;--ink:#1a1a1a;--black:#0a0a0a;--green:#16a34a;--green-bg:#f0fdf4;--green-border:#bbf7d0;--red:#dc2626;--red-bg:#fef2f2;--gold:#92400e;--gold-bg:#fffbeb;--radius:14px;--radius-sm:10px;--shadow:0 1px 4px rgba(0,0,0,0.06);--shadow-md:0 4px 16px rgba(0,0,0,0.08)}
@@ -372,7 +372,7 @@ header{background:var(--black);color:#fff;height:56px;display:flex;align-items:c
   <div class="ph"><div class="ph-eye">New Account · Step 2 of 3</div><div class="ph-title">Verify Phone</div></div>
   <div class="card">
     <div style="font-size:13px;color:var(--ink-mid);margin-bottom:14px;line-height:1.5">A code was sent to <strong id="su-otp-phone">—</strong></div>
-    <div class="field"><label>4-Digit OTP</label><input id="su-otp-input" type="text" placeholder="e.g. 4829" maxlength="4" inputmode="numeric" style="font-size:22px;font-weight:800;letter-spacing:6px;text-align:center"></div>
+    <div class="field"><label>6-Digit OTP</label><input id="su-otp-input" type="text" placeholder="e.g. 482951" maxlength="6" inputmode="numeric" style="font-size:22px;font-weight:800;letter-spacing:6px;text-align:center"></div>
     <div id="su-otp-hint" style="font-size:12px;color:var(--ink-light);margin-bottom:14px"></div>
     <button class="btn btn-primary" onclick="signupVerifyOTP()">Verify →</button>
     <button class="btn btn-ghost" onclick="signupResendOTP()" style="margin-top:8px">Resend OTP</button>
@@ -436,7 +436,7 @@ header{background:var(--black);color:#fff;height:56px;display:flex;align-items:c
   </div>
   <div class="card" id="forgot-step-2" style="display:none">
     <div style="font-size:13px;color:var(--ink-mid);margin-bottom:14px;line-height:1.5">OTP sent to <strong id="forgot-otp-phone">—</strong></div>
-    <div class="field"><label>4-Digit OTP</label><input id="forgot-otp-input" type="text" placeholder="e.g. 4829" maxlength="4" inputmode="numeric" style="font-size:22px;font-weight:800;letter-spacing:6px;text-align:center"></div>
+    <div class="field"><label>6-Digit OTP</label><input id="forgot-otp-input" type="text" placeholder="e.g. 482951" maxlength="6" inputmode="numeric" style="font-size:22px;font-weight:800;letter-spacing:6px;text-align:center"></div>
     <div id="forgot-otp-hint" style="font-size:12px;color:var(--ink-light);margin-bottom:14px"></div>
     <button class="btn btn-primary" onclick="forgotVerifyOTP()">Verify →</button>
   </div>
@@ -529,8 +529,8 @@ header{background:var(--black);color:#fff;height:56px;display:flex;align-items:c
       </div>
       <div class="field"><label>IMEI</label><input id="rb-imei" class="rb-input" type="text" placeholder="15-digit IMEI" inputmode="numeric"></div>
       <div class="field-row">
-        <div class="field"><label>Bought For (₦)</label><input id="rb-buy" class="rb-input" type="number" placeholder="e.g. 180000" inputmode="numeric"></div>
-        <div class="field"><label>Selling Price (₦)</label><input id="rb-sell" class="rb-input" type="number" placeholder="e.g. 220000" inputmode="numeric"></div>
+        <div class="field"><label>Bought For (₦)</label><input id="rb-buy" class="rb-input" type="text" placeholder="e.g. 180,000" inputmode="numeric" oninput="fmtNum(this)"></div>
+        <div class="field"><label>Selling Price (₦)</label><input id="rb-sell" class="rb-input" type="text" placeholder="e.g. 220,000" inputmode="numeric" oninput="fmtNum(this)"></div>
       </div>
       <div class="field"><label>Source / Supplier</label><input id="rb-source" class="rb-input" type="text" placeholder="e.g. Alaba market, Lagos"></div>
       <button onclick="addStock()" class="btn btn-primary">+ Add to Stock Book</button>
@@ -600,7 +600,7 @@ header{background:var(--black);color:#fff;height:56px;display:flex;align-items:c
         <div class="field"><label data-en="Model & Storage" data-ha="Model da Ajiya">Model & Storage</label><input id="f-model" type="text" placeholder="e.g. iPhone 11 Pro 256GB"></div>
         <div class="field"><label data-en="Colour" data-ha="Launi">Colour</label><input id="f-colour" type="text" placeholder="e.g. 6M Black Colour"></div>
         <div class="field"><label data-en="IMEI — dial *#06#" data-ha="IMEI — buga *#06#">IMEI — dial *#06#</label><input id="f-imei" type="text" placeholder="15-digit IMEI" inputmode="numeric"></div>
-        <div class="field"><label data-en="Sale Price (₦)" data-ha="Farashin Tallace (₦)">Sale Price (₦)</label><input id="f-price" type="number" placeholder="e.g. 250000" inputmode="numeric"></div>
+        <div class="field"><label data-en="Sale Price (₦)" data-ha="Farashin Tallace (₦)">Sale Price (₦)</label><input id="f-price" type="text" placeholder="e.g. 250,000" inputmode="numeric" oninput="fmtNum(this)"></div>
         <div class="field"><label data-en="Guarantee" data-ha="Garanti">Guarantee</label>
           <select id="f-guar"><option>No guarantee</option><option selected>2 days guarantee</option><option>1 week guarantee</option><option>1 month guarantee</option><option>3 months guarantee</option><option>6 months guarantee</option><option>1 year guarantee</option></select>
         </div>
@@ -677,7 +677,7 @@ header{background:var(--black);color:#fff;height:56px;display:flex;align-items:c
       <div style="font-size:22px;font-weight:900;color:#fff;letter-spacing:-0.5px;line-height:1.1;margin-bottom:8px">GENERATE<br>DIGITAL RECEIPT</div>
       <div style="font-size:11px;color:rgba(255,255,255,0.55);letter-spacing:0.5px;line-height:1.6;margin-bottom:18px">SCAN TO CREATE A SECURE, DIGITAL RECEIPT<br>FOR THIS TRANSACTION.</div>
       <div style="background:#fff;border-radius:12px;padding:14px;display:inline-block;position:relative">
-        <canvas id="qr-canvas" width="200" height="200" style="display:block"></canvas>
+        <div id="qr-canvas" style="width:200px;height:200px"></div>
         <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:44px;height:44px;background:#0a0a0a;border-radius:50%;display:flex;align-items:center;justify-content:center;border:3px solid #fff">
           <img id="qr-logo-centre" src="" style="width:30px;height:30px;object-fit:contain;border-radius:50%" alt="">
         </div>
@@ -805,7 +805,7 @@ window.signupStep1 = function(){
     toast('This shop already has an account. Use Sign In.', 4000); return;
   }
   suData = { shopName: shopName, shopAddress: shopAddress, shopPhone: shopPhone, phone1: ph1, phone2: ph2 };
-  suOTP = String(Math.floor(1000 + Math.random()*9000));
+  suOTP = String(Math.floor(100000 + Math.random()*900000));
   document.getElementById('su-otp-phone').textContent = ph1;
   document.getElementById('su-otp-hint').textContent = 'Demo OTP: ' + suOTP;
   document.getElementById('su-shop-display').textContent = shopName;
@@ -815,7 +815,7 @@ window.signupStep1 = function(){
 }
 
 window.signupResendOTP = function(){
-  suOTP = String(Math.floor(1000 + Math.random()*9000));
+  suOTP = String(Math.floor(100000 + Math.random()*900000));
   document.getElementById('su-otp-hint').textContent = 'New OTP: ' + suOTP;
   toast('New OTP sent');
 }
@@ -958,7 +958,7 @@ window.forgotPin = function(){
 
 window.forgotSendOTP = function(){
   if(!loginAccount){ toast('Account not found'); return }
-  forgotOTP = String(Math.floor(1000 + Math.random()*9000));
+  forgotOTP = String(Math.floor(100000 + Math.random()*900000));
   document.getElementById('forgot-otp-phone').textContent = loginAccount.phone1;
   document.getElementById('forgot-otp-hint').textContent = 'Demo OTP: ' + forgotOTP;
   document.getElementById('forgot-otp-input').value = '';
@@ -1046,11 +1046,11 @@ function addStock(){
   const storage=document.getElementById('rb-storage').value;
   const colour=document.getElementById('rb-colour').value.trim();
   const imei=document.getElementById('rb-imei').value.trim();
-  const buyPrice=parseInt(document.getElementById('rb-buy').value)||0;
-  const sellPrice=parseInt(document.getElementById('rb-sell').value)||0;
+  const buyPrice=rawNum('rb-buy');
+  const sellPrice=rawNum('rb-sell');
   const source=document.getElementById('rb-source').value.trim();
   if(!device){toast('Enter device name');return}
-  if(!buyPrice){toast('Enter purchase price');return}
+  if(!buyPrice||buyPrice<=0){toast('Enter purchase price');return}
   const now=new Date();
   const entry={
     id:'STK-'+Math.random().toString(36).substr(2,6).toUpperCase(),
@@ -1225,7 +1225,7 @@ function ns2(){
     ['Device',`${brand} ${document.getElementById('f-model').value.trim()}`],
     ['Colour',document.getElementById('f-colour').value.trim()||'—'],
     ['IMEI',document.getElementById('f-imei').value.trim()||'—'],
-    ['Price',document.getElementById('f-price').value?'₦'+parseInt(document.getElementById('f-price').value).toLocaleString():'—'],
+    ['Price',rawNum('f-price')?'₦'+rawNum('f-price').toLocaleString():'—'],
     ['Guarantee',document.getElementById('f-guar').value],
     ['Buyer',name],['Phone',phone],
     ['Address',document.getElementById('f-address').value.trim()||'—']
@@ -1236,7 +1236,7 @@ function ns2(){
 function submitSale(){
   const now=new Date();
   const shopSales=getAll().filter(s=>s.shop===shop.name);
-  const price=document.getElementById('f-price').value?parseInt(document.getElementById('f-price').value):null;
+  const price=rawNum('f-price')||null;
   const imei=document.getElementById('f-imei').value.trim()||'Not provided';
   const colour=document.getElementById('f-colour').value.trim()||'Not specified';
   const model=document.getElementById('f-model').value.trim();
@@ -1267,7 +1267,19 @@ function submitSale(){
   showDbStatus();showV('v-receipt');
 }
 
-// ── PAID STAMP ───────────────────────────────
+// ── NUMBER FORMATTING ────────────────────────
+// Auto-insert commas as user types
+window.fmtNum = function(el){
+  var raw = el.value.replace(/,/g, '').replace(/[^0-9]/g, '');
+  if(raw === '') { el.value = ''; return; }
+  el.value = parseInt(raw, 10).toLocaleString('en-NG');
+}
+// Read raw number from a formatted input
+function rawNum(id){
+  var el = document.getElementById(id);
+  if(!el) return 0;
+  return parseInt(el.value.replace(/,/g,''), 10) || 0;
+}
 let isPaid = false;
 window.togglePaid = function(){
   isPaid = !isPaid;
@@ -1434,75 +1446,45 @@ function newSale(){showV('v-dash');dashTab('new',document.getElementById('nt-new
 function goHome(){showV('v-dash');dashTab('overview',document.getElementById('nt-overview'))}
 
 // ── QR CODE ──────────────────────────────────
-// Simple QR matrix generator (no library needed)
-function generateQRMatrix(text) {
-  // Use a seed from the text to generate a deterministic-looking QR pattern
-  // This is a visual QR — for a real scannable QR, swap this canvas draw
-  // with a QR library like qrcode.js
-  var size = 25;
-  var matrix = [];
-  var seed = 0;
-  for(var i=0;i<text.length;i++) seed += text.charCodeAt(i);
-  function seededRand(s){ return ((s*1664525+1013904223)&0xffffffff)/0xffffffff; }
-  for(var r=0;r<size;r++){
-    matrix[r]=[];
-    for(var c=0;c<size;c++){
-      seed = (seed*1664525+1013904223)&0xffffffff;
-      matrix[r][c] = Math.abs(seed)/0xffffffff > 0.5 ? 1 : 0;
-    }
-  }
-  // Force corner finder patterns
-  function setFinder(row,col){
-    for(var dr=0;dr<7;dr++) for(var dc=0;dc<7;dc++){
-      if(dr===0||dr===6||dc===0||dc===6) matrix[row+dr][col+dc]=1;
-      else if(dr>=2&&dr<=4&&dc>=2&&dc<=4) matrix[row+dr][col+dc]=1;
-      else matrix[row+dr][col+dc]=0;
-    }
-  }
-  setFinder(0,0); setFinder(0,size-7); setFinder(size-7,0);
-  return matrix;
-}
-
-function drawQROnCanvas(canvasId, text){
-  var canvas = document.getElementById(canvasId);
-  if(!canvas) return;
-  var ctx = canvas.getContext('2d');
-  var size = canvas.width;
-  var matrix = generateQRMatrix(text);
-  var cells = matrix.length;
-  var cellSize = size/cells;
-  ctx.fillStyle = '#ffffff';
-  ctx.fillRect(0,0,size,size);
-  ctx.fillStyle = '#0a0a0a';
-  for(var r=0;r<cells;r++){
-    for(var c=0;c<cells;c++){
-      if(matrix[r][c]===1){
-        ctx.fillRect(c*cellSize, r*cellSize, cellSize-0.5, cellSize-0.5);
-      }
-    }
-  }
-}
+var qrInstance = null;
 
 function getLogo(){
-  // Get logo from existing img tags in page
   var imgs = document.querySelectorAll('img');
   for(var i=0;i<imgs.length;i++){
-    if(imgs[i].src && imgs[i].src.includes('data:image')) return imgs[i].src;
+    if(imgs[i].src && imgs[i].src.indexOf('data:image')===0) return imgs[i].src;
   }
   return '';
 }
 
 window.openQR = function(){
-  var shopName = shop.name || localStorage.getItem('dg_shopName') || 'Your Shop';
-  // URL this QR will point to — the seller login page with phone pre-filled hint
-  var url = window.location.href.split('?')[0] + '?shop=' + encodeURIComponent(shopName);
+  var shopName = shop.name || localStorage.getItem('dg_shopName') || 'Shop';
+  // URL points directly to seller page — when scanned opens seller login
+  var pageUrl = window.location.href.replace(/[?#].*$/,'');
+  var url = pageUrl + '?shop=' + encodeURIComponent(shopName);
+
   document.getElementById('qr-shop-title').textContent = shopName;
   document.getElementById('qr-shop-label').textContent = shopName;
+
   var logo = getLogo();
   document.getElementById('qr-logo-img').src = logo;
   document.getElementById('qr-logo-centre').src = logo;
+
   showV('v-qr');
-  setTimeout(function(){ drawQROnCanvas('qr-canvas', url); }, 100);
+
+  // Generate real scannable QR code
+  setTimeout(function(){
+    var container = document.getElementById('qr-canvas');
+    container.innerHTML = ''; // clear previous
+    if(qrInstance){ try{ qrInstance.clear(); }catch(e){} }
+    qrInstance = new QRCode(container, {
+      text:         url,
+      width:        200,
+      height:       200,
+      colorDark:    '#0a0a0a',
+      colorLight:   '#ffffff',
+      correctLevel: QRCode.CorrectLevel.H  // H = highest error correction, needed for logo overlay
+    });
+  }, 150);
 }
 
 function openQRAfterSignup(account){
@@ -1518,17 +1500,19 @@ window.downloadQR = async function(){
   try{
     var card = document.getElementById('qr-card');
     var canvas = await html2canvas(card, {
-      scale: 3,
+      scale:           3,
       backgroundColor: '#0a0a0a',
-      useCORS: true
+      useCORS:         true,
+      allowTaint:      true
     });
     var link = document.createElement('a');
-    link.download = 'DeviceGuard-QR-' + (shop.name||'Shop').replace(/\s+/g,'-') + '.png';
+    var name = (shop.name || localStorage.getItem('dg_shopName') || 'Shop').replace(/\s+/g,'-');
+    link.download = 'DeviceGuard-QR-' + name + '.png';
     link.href = canvas.toDataURL('image/png');
     link.click();
     toast('QR card downloaded ✓');
   } catch(e){
-    toast('Download error: ' + e.message);
+    toast('Download failed: ' + e.message);
   }
 }
 
